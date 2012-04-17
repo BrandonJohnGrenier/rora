@@ -6,20 +6,76 @@ class HandTest < ActiveSupport::TestCase
     @hand = Hand.new("ASKSQSJSTS")
   end
 
-  test "a hand should have an id" do
+  test "should raise an error when a hand is not created with 5 cards" do
+    assert_raise ArgumentError do
+      Hand.new [Card.new("AS"), Card.new("KS")]
+    end
+  end
+
+  test "should raise an error when a hand is not created with 10 characters" do
+    assert_raise ArgumentError do
+      Hand.new "ASKSQSJS"
+    end
+  end
+
+  test "the hand should have an id" do
     assert_equal 7193866898674063, @hand.id
   end
 
-  test "an id should be equal to the product of each card id contained in the hand" do
+  test "the hand id should be equal to the product of each card id contained in the hand" do
     assert_equal @hand.id, (Card.new("AS").id * Card.new("KS").id * Card.new("QS").id * Card.new("JS").id * Card.new("TS").id)
   end
 
-  test "a hand should have a hash key" do
+  test "the hand should have a hash key" do
     assert_equal 2101589603, @hand.hash_key
   end
 
-  test "a hash key should be equal to the product of each card suit id in the hand" do
-    
+  test "the hash key should be equal to the product of each card rank id in the hand times" do
+    assert_equal Hand.new("ASACAHJSTS").hash_key, (Card.new("AS").rank.id * Card.new("AC").rank.id * Card.new("AH").rank.id * Card.new("JS").rank.id * Card.new("TS").rank.id)
+  end
+
+  test "the hash key should be equal to the product of each card rank id in the hand times 67 when the hand is a flush" do
+    assert_equal @hand.hash_key, (Card.new("AS").rank.id * Card.new("KS").rank.id * Card.new("QS").rank.id * Card.new("JS").rank.id * Card.new("TS").rank.id * 67)
+  end
+
+  test "the hand should be a flush" do
+    assert_equal true, @hand.flush?
+  end
+
+  test "the hand should not be a flush" do
+    assert_equal false, Hand.new("2D3S4H8CJS").flush?
+  end
+
+  test "the hand should have a score" do
+    assert_equal 1, @hand.score
+  end
+
+  test "the hand should have a probability" do
+    assert_equal 0.0015, @hand.probability
+  end
+
+  test "the hand should have a name" do
+    assert_equal "Royal Flush", @hand.name
+  end
+
+  test "the hand should have a hand type" do
+    assert_equal HandType::STRAIGHT_FLUSH, @hand.type
+  end
+
+  test "the hand should have five cards" do
+    assert_equal 5, @hand.cards.size
+  end
+
+  test "the hand should be a straight flush" do
+    assert_equal true, @hand.straight_flush?
+  end
+
+  test "the hand should be a straight" do
+    assert_equal true, Hand.new("ACKSQSJDTS").straight?
+  end
+
+  test "the hand should be a four of a kind" do
+    assert_equal true, Hand.new("ACASAHADJS").four_of_a_kind?
   end
 
 end

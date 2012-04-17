@@ -38,7 +38,7 @@ class Hand
 	def hash_key
 		j = 1
 		@cards.each { |card| j = j * card.rank.id  }
-		flush? ? j * 67 : j
+		flush? ? (j * 67) : j
   end
 
   # Returns the hand value.
@@ -71,6 +71,14 @@ class Hand
     @cards.dup
   end
 
+  # Determines if this hand is a flush.
+  def flush?
+    for i in 0..@cards.size - 2 do
+      return false if @cards[i].suit != @cards[i+1].suit
+    end
+    true
+  end
+
   # Determines if this hand is a straight flush.
   def straight_flush?
     type == HandType::STRAIGHT_FLUSH
@@ -83,15 +91,7 @@ class Hand
 
   # Determines if this hand is a full house.
   def full_house?
-    type == HandType::FULL_HOUSE .key
-  end
-
-  # Determines if this hand is a flush.
-  def flush?
-    for i in 0..@cards.size - 2 do
-      false if @cards[i].suit != @cards[i+1].suit
-    end
-    true
+    type == HandType::FULL_HOUSE
   end
 
   # Determines if this hand is a straight.

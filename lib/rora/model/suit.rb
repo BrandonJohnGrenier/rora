@@ -28,6 +28,10 @@ class Suit
     "Suit: id=#{@id}, key='#{@key}', value='#{@value}'"
   end
 
+  def == suit
+    self.id == suit.id
+  end
+
   class << self
     private :new
   end
