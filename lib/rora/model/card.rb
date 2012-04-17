@@ -42,7 +42,7 @@ class Card
   end
 
   def to_s
-    "Card: id=#{id}, name='#{@rank.name} of #{@suit.name}s', value='#{value}'"
+    "Card: id=#{id}, name='#{@rank.value} of #{@suit.value}s', value='#{@rank.key}#{@suit.key}'"
   end
   
 end
