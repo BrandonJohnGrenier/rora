@@ -7,7 +7,7 @@
 # The first method uses the Rank and Suit enumerators
 # card = Card.new(Rank::KING, Suit::HEART)
 #
-# The second method uses rank and suit values. 
+# The second method uses rank and suit values.
 # card = Card.new("KH")
 #
 # Rank and suit values are case insensitive, so these work as well
@@ -30,19 +30,31 @@ class Card
   end
 
   def id
-    rank.id * suit.id
+    @rank.id * @suit.id
+  end
+
+  def key
+    @rank.key + @suit.key
   end
 
   def value
-    rank.value + suit.value
+    @rank.value + @suit.value
+  end
+
+  def eql? card
+    self == card
   end
 
   def == card
     card.id == self.id
   end
 
+  def hash
+    return self.id
+  end
+
   def to_s
     "Card: id=#{id}, name='#{@rank.value} of #{@suit.value}s', value='#{@rank.key}#{@suit.key}'"
   end
-  
+
 end

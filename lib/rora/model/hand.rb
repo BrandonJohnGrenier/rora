@@ -10,7 +10,7 @@
 # hand = Hand.new("ACKCJS9H4H")
 #
 class Hand
-	attr_reader :cards, :hand_repository
+  attr_reader :cards, :hand_repository
 
   def initialize cards
     @cards = Array.new
@@ -25,25 +25,27 @@ class Hand
       raise ArgumentError, "Exactly 10 characters are required to create a hand, #{cards.size} provided" if cards.size != 10
       @cards = [Card.new(cards[0,2]), Card.new(cards[2,2]), Card.new(cards[4,2]), Card.new(cards[6,2]), Card.new(cards[8,2])]
     end
+
+    raise ArgumentError, "The hand contains duplicate cards" if @cards.uniq.length != @cards.length
   end
 
-	# Returns the hand id.
-	def id
-		i = 1
+  # Returns the hand id.
+  def id
+    i = 1
     @cards.each { |card| i = i * card.id }
-		i
+    i
   end
 
   # Returns the hand hash key.
-	def hash_key
-		j = 1
-		@cards.each { |card| j = j * card.rank.id  }
-		flush? ? (j * 67) : j
+  def hash_key
+    j = 1
+    @cards.each { |card| j = j * card.rank.id  }
+    flush? ? (j * 67) : j
   end
 
   # Returns the hand value.
-	def value
-
+  def value
+    @cards.map { |card| "#{card.key}" }.join(",")
   end
 
   # Returns the hand strength, from 1 (strongest) to 7462 (weakest).
@@ -101,7 +103,7 @@ class Hand
 
   # Determines if this hand is a three of a kind.
   def three_of_a_kind?
-    type == HandType::THREE_OF_A_KIND 
+    type == HandType::THREE_OF_A_KIND
   end
 
   # Determines if this hand is two pair.
@@ -125,8 +127,9 @@ class Hand
   end
 
   private
+
   def resolve_hand_attribute value
-    @hand_repository.lookup(hash_key)[value]
+    @hand_repository.find(hash_key)[value]
   end
 
 end

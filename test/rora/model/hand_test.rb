@@ -18,6 +18,12 @@ class HandTest < ActiveSupport::TestCase
     end
   end
 
+  test "should raise an error when creating a hand with duplicate cards" do
+    assert_raise ArgumentError do
+      Hand.new "ASKSJSASKS"
+    end
+  end
+
   test "the hand should have an id" do
     assert_equal 7193866898674063, @hand.id
   end
@@ -36,6 +42,10 @@ class HandTest < ActiveSupport::TestCase
 
   test "the hash key should be equal to the product of each card rank id in the hand times 67 when the hand is a flush" do
     assert_equal @hand.hash_key, (Card.new("AS").rank.id * Card.new("KS").rank.id * Card.new("QS").rank.id * Card.new("JS").rank.id * Card.new("TS").rank.id * 67)
+  end
+
+  test "the hand should have a value" do
+    assert_equal "AS,KS,QS,JS,TS", @hand.value
   end
 
   test "the hand should be a flush" do

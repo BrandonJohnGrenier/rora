@@ -66,12 +66,18 @@ class DeckTest < ActiveSupport::TestCase
 
   test "should remove multiple cards from the deck" do
     cards = [Card.new("QS"), Card.new("KS"), Card.new("AS")]
-    
+
     assert_equal 52, @deck.size
-    @deck.remove_all cards
+    @deck.remove cards
     assert_equal 49, @deck.size
-    @deck.remove_all cards
+    @deck.remove cards
     assert_equal 49, @deck.size
+  end
+
+  test "should remove a starting hand from the deck" do
+    assert_equal 52, @deck.size
+    @deck.remove StartingHand.new("ASKS")
+    assert_equal 50, @deck.size
   end
 
   test "should determine if the given card is in the deck" do

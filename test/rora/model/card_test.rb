@@ -30,6 +30,10 @@ class CardTest < ActiveSupport::TestCase
     assert_equal card.value, (Rank::ACE.value + Suit::SPADE.value)
   end
 
+  test "a card key should be equal to the concatenation of the card suit key and rank key" do
+    assert_equal "AS", Card.new("AS").key
+  end
+
   test "should generate a readable string representation" do
     assert_equal "Card: id=1927, name='Ace of Spades', value='AS'", Card.new("AS").to_s
   end
