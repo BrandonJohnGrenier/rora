@@ -34,8 +34,24 @@ class CardTest < ActiveSupport::TestCase
     assert_equal "AS", Card.new("AS").key
   end
 
+  test "a card should have a name" do
+    assert_equal "Ace of Spades", Card.new("AS").name
+  end
+
   test "should generate a readable string representation" do
-    assert_equal "Card: id=1927, name='Ace of Spades', value='AS'", Card.new("AS").to_s
+    assert_equal "Card: name='Ace of Spades' value='AS' id=1927", Card.new("AS").to_s
+  end
+
+  test "should convert an arbitrarily long string of characters into an array of cards" do
+    assert_equal 7, Card.to_cards("ASKSJSQSTCJCAH").size
+  end
+
+  test "should convert an arbitrarily long string of comma-delimited characters into an array of cards" do
+    assert_equal 7, Card.to_cards("AS,KS,JS,QS,TC,JC,AH").size
+  end
+
+  test "should convert an arbitrarily long string of space-delimited characters into an array of cards" do
+    assert_equal 7, Card.to_cards("AS KS JS QS TC JC AH").size
   end
 
 end

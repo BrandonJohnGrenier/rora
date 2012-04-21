@@ -3,7 +3,7 @@ require File.expand_path("../../rora_test", File.dirname(__FILE__))
 class HandTest < ActiveSupport::TestCase
 
   def setup
-    @hand = Hand.new("ASKSQSJSTS")
+    @hand = Hand.new("AS,KS,QS,JS,TS")
   end
 
   test "should raise an error when a hand is not created with 5 cards" do
@@ -20,7 +20,7 @@ class HandTest < ActiveSupport::TestCase
 
   test "should raise an error when creating a hand with duplicate cards" do
     assert_raise ArgumentError do
-      Hand.new "ASKSJSASKS"
+      Hand.new "AS KS JS AS KS"
     end
   end
 

@@ -8,16 +8,8 @@ class StartingHand
   def initialize cards
     @cards = Array.new, @id = 1, @key = 1
 
-    if cards.kind_of? Array
-      raise ArgumentError, "Exactly 2 cards are required to create a starting hand, #{cards.size} provided" if cards.size != 2
-      @cards = cards
-    end
-
-    if cards.kind_of? String
-      raise ArgumentError, "Exactly 4 characters are required to create a starting hand, #{cards.size} provided" if cards.size != 4
-      @cards = [Card.new(cards[0,2]), Card.new(cards[2,2])]
-    end
-
+    @cards = cards.kind_of?(Array) ? cards : Card.to_cards(cards)
+    raise ArgumentError, "Exactly 2 cards are required to create a starting hand, #{@cards.size} provided" if @cards.size != 2
     raise ArgumentError, "The hand contains duplicate cards" if @cards.uniq.length != @cards.length
 
     @cards.each {|card| @id *= card.id}
@@ -80,16 +72,16 @@ class StartingHand
   # the same value in poker. To elaborate on this a bit, consider the
   # number of hands a player could have containing a Jack and a Seven:
   #
-  # J♣ 7♦ <br/>
-  # J♠ 7♦ <br/>
-  # J♥ 7♦ <br/>
-  # J♦ 7♦ <br/>
-  # J♣ 7♠ <br/>
-  # J♠ 7♠ <br/>
-  # J♥ 7♠ <br/>
-  # J♦ 7♠ <br/>
-  # J♣ 4♥ <br/>
-  # J♠ 4♥ <br/>
+  # J♣ 7♦
+  # J♠ 7♦
+  # J♥ 7♦
+  # J♦ 7♦
+  # J♣ 7♠
+  # J♠ 7♠
+  # J♥ 7♠
+  # J♦ 7♠
+  # J♣ 4♥
+  # J♠ 4♥
   #
   # This list goes on a bit further further. You might be surprised to know
   # that there are 16 starting hand combinations that contain exactly one

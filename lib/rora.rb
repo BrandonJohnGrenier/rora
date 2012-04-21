@@ -1,3 +1,4 @@
+require 'rora/model/board'
 require 'rora/model/rank'
 require 'rora/model/suit'
 require 'rora/model/card'

@@ -23,7 +23,7 @@ class Card
       @suit = args[1]
     end
     if(args.size == 1)
-      raise ArgumentError if args[0].length != 2
+      raise ArgumentError, "#{args} is an invalid card sequence" if args[0].length != 2
       @rank = Rank.get(args[0][0])
       @suit = Suit.get(args[0][1])
     end
@@ -41,20 +41,34 @@ class Card
     @rank.value + @suit.value
   end
 
+  def name
+    "#{@rank.value} of #{@suit.value}s"
+  end
+
   def eql? card
     self == card
   end
 
   def == card
-    card.id == self.id
+    self.id == card.id
   end
 
   def hash
     return self.id
   end
 
+  def self.to_cards string
+    cards = Array.new
+    if !string.include?(",") && !string.include?(" ")
+      string.scan(/../).each { |chars| cards << Card.new(chars) }
+    else
+      string.split(string.include?(",") ? "," : " ").each { |chars| cards << Card.new(chars) }
+    end
+    cards
+  end
+
   def to_s
-    "Card: id=#{id}, name='#{@rank.value} of #{@suit.value}s', value='#{@rank.key}#{@suit.key}'"
+    "Card: name='#{name}' value='#{@rank.key}#{@suit.key}' id=#{id}"
   end
 
 end

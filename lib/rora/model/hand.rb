@@ -13,19 +13,10 @@ class Hand
   attr_reader :cards, :hand_repository
 
   def initialize cards
-    @cards = Array.new
     @hand_repository = HandRepository.instance
+    @cards = cards.kind_of?(Array) ? cards : Card.to_cards(cards)
 
-    if cards.kind_of? Array
-      raise ArgumentError, "Exactly 5 cards are required to create a hand, #{cards.size} provided" if cards.size != 5
-      @cards = cards
-    end
-
-    if cards.kind_of? String
-      raise ArgumentError, "Exactly 10 characters are required to create a hand, #{cards.size} provided" if cards.size != 10
-      @cards = [Card.new(cards[0,2]), Card.new(cards[2,2]), Card.new(cards[4,2]), Card.new(cards[6,2]), Card.new(cards[8,2])]
-    end
-
+    raise ArgumentError, "Exactly 5 cards are required to create a hand, #{cards.size} provided" if @cards.size != 5
     raise ArgumentError, "The hand contains duplicate cards" if @cards.uniq.length != @cards.length
   end
 
