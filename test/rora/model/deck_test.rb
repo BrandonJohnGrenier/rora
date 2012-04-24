@@ -80,6 +80,14 @@ class DeckTest < ActiveSupport::TestCase
     assert_equal 50, @deck.size
   end
 
+  test "should remove card values from the deck" do
+    assert_equal 52, @deck.size
+    @deck.remove "AS"
+    assert_equal 51, @deck.size
+    @deck.remove "KS,QS"
+    assert_equal 49, @deck.size
+  end
+
   test "should determine if the given card is in the deck" do
     assert_equal true, @deck.contains(@card)
     @deck.remove(@card)

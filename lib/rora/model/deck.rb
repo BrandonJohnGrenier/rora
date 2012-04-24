@@ -74,6 +74,12 @@ class Deck
     if argument.kind_of? StartingHand
       argument.cards.each { |card| @cards.delete card }
     end
+    if argument.kind_of? Board
+      argument.cards.each { |card| @cards.delete card }
+    end
+    if argument.kind_of? String
+      Card.to_cards(argument).each { |card| @cards.delete card }
+    end
     self
   end
 
@@ -83,7 +89,7 @@ class Deck
   end
 
   def combination number
-    @cards.combination(number).to_a
+    cards.combination(number).to_a
   end
 
 end

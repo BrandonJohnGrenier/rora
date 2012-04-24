@@ -25,12 +25,59 @@ class HandRepositoyTest < ActiveSupport::TestCase
   end
 
   test "should return every poker hand that can be made with the given starting hand" do
-    assert_equal 19600, @repository.list(StartingHand.new("ASKS")).size
+    assert_equal 19600, @repository.list(:starting_hand => StartingHand.new("AS,KS")).size
   end
 
   test "should return every poker hand that can be made with the given starting hand and deck" do
-    deck = Deck.new.remove(Card.new("AH")).remove(Card.new("KH")).remove(Card.new("AD")).remove(Card.new("KD"))
-    assert_equal 15180, @repository.list(StartingHand.new("ASKS"), deck).size
+    deck = Deck.new.remove "AH,KH,AD,KD"
+    assert_equal 15180, @repository.list(:starting_hand => StartingHand.new("AS,KS"), :deck => deck).size
+  end
+
+  test "should return every poker hand that can be made with the given starting hand, flop, turn and river" do
+    assert_equal 21, @repository.list(:starting_hand => StartingHand.new("AS,KS"), :board => Board.new("QS,JS,TS,4H,3H")).size
+  end
+
+  test "should return every poker hand that can be made with the given starting hand, flop and turn" do
+    assert_equal 966, @repository.list(:starting_hand => StartingHand.new("AS,KS"), :board => Board.new("QS,JS,TS,4H")).size
+  end
+
+  test "should return every poker hand that can be made with the given starting hand and flop" do
+    assert_equal 22701, @repository.list(:starting_hand => StartingHand.new("AS,KS"), :board => Board.new("QS,JS,TS")).size
+  end
+
+  test "should return every poker hand that can be made with the given starting hand, flop and deck" do
+    deck = Deck.new.remove "AH,KH,AD,KD"
+    assert_equal 18963, @repository.list(:starting_hand => StartingHand.new("AS,KS"), :board => Board.new("QS,JS,TS"), :deck => deck).size
+  end
+
+  test "should return every distinct poker hand" do
+    assert_equal 7462, @repository.list_unique.size
+  end
+
+  test "should return every distinct poker hand that can be made with the given starting hand" do
+    assert_equal 620, @repository.list_unique(:starting_hand => StartingHand.new("AS,KS")).size
+  end
+
+  test "should return every distinct poker hand that can be made with the given starting hand and deck" do
+    deck = Deck.new.remove "AH,KH,AD,KD"
+    assert_equal 594, @repository.list_unique(:starting_hand => StartingHand.new("AS,KS"), :deck => deck).size
+  end
+
+  test "should return every distinct poker hand that can be made with the given starting hand, flop, turn and river" do
+    assert_equal 21, @repository.list_unique(:starting_hand => StartingHand.new("AS,KS"), :board => Board.new("QS,JS,TS,4H,3H")).size
+  end
+
+  test "should return every distinct poker hand that can be made with the given starting hand, flop and turn" do
+    assert_equal 212, @repository.list_unique(:starting_hand => StartingHand.new("AS,KS"), :board => Board.new("QS,JS,TS,4H")).size
+  end
+
+  test "should return every distinct poker hand that can be made with the given starting hand and flop" do
+    assert_equal 1042, @repository.list_unique(:starting_hand => StartingHand.new("AS,KS"), :board => Board.new("QS,JS,TS")).size
+  end
+
+  test "should return every distinct poker hand that can be made with the given starting hand, flop and deck" do
+    deck = Deck.new.remove "AH,KH,AD,KD"
+    assert_equal 1030, @repository.list_unique(:starting_hand => StartingHand.new("AS,KS"), :board => Board.new("QS,JS,TS"), :deck => deck).size
   end
 
 end
