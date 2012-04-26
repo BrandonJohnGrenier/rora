@@ -89,15 +89,26 @@ class DeckTest < ActiveSupport::TestCase
   end
 
   test "should determine if the given card is in the deck" do
-    assert_equal true, @deck.contains(@card)
+    assert_equal true, @deck.contains?(@card)
     @deck.remove(@card)
-    assert_equal false, @deck.contains(@card)
+    assert_equal false, @deck.contains?(@card)
   end
 
   test "should deal a card from the deck" do
     card = @deck.deal
     assert_not_nil card
     assert_equal 51, @deck.size
+  end
+
+  test "should return false if the board does not contain any of the given cards" do
+    @deck.remove "AH,KH,QH,JS,TS"
+    assert_equal false, @deck.contains_any?(Card.to_cards("AH,KH,QH"))
+    assert_equal false, @deck.contains_any?("AH,KH,QH")
+  end
+
+  test "should return true if the board contains at least one of the given cards" do
+    assert_equal true, @deck.contains_any?(Card.to_cards("AH,KH,QH,JH,KS"))
+    assert_equal true, @deck.contains_any?("AH,KH,QH,JH,KS")
   end
 
 end

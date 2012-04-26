@@ -110,14 +110,28 @@ class BoardTest < ActiveSupport::TestCase
     assert_equal Card.new("TS"), board.river
   end
 
+  test "should return false if the board does not contain the given card" do
+    board = Board.new "AS,KS,QS,JS,TS"
+    assert_equal false, board.contains?("3D")
+    assert_equal false, board.contains?(Card.new("3D"))
+  end
+
+  test "should return true if the boad does contain the given card" do
+    board = Board.new "AS,KS,QS,JS,TS"
+    assert_equal true, board.contains?("TS")
+    assert_equal true, board.contains?(Card.new("AS"))
+  end
+
   test "should return false if the board does not contain any of the given cards" do
     board = Board.new "AS,KS,QS,JS,TS"
     assert_equal false, board.contains_any?(Card.to_cards("AH,KH,QH"))
+    assert_equal false, board.contains_any?("AH,KH,QH")
   end
 
   test "should return true if the board contains at least one of the given cards" do
     board = Board.new "AS,KS,QS,JS,TS"
     assert_equal true, board.contains_any?(Card.to_cards("AH,KH,QH,JH,KS"))
+    assert_equal true, board.contains_any?("AH,KH,QH,JH,KS")
   end
 
 end

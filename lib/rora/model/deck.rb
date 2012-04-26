@@ -84,8 +84,22 @@ class Deck
   end
 
   # Determines if the deck contains the given card.
-  def contains card
-    @cards.include? card
+  def contains? argument
+    if argument.kind_of? Card
+      return @cards.include?(argument)
+    end
+    @cards.include? Card.new(argument)
+  end
+
+  # Determines if the deck contains any of the given cards.
+  def contains_any? argument
+    if argument.kind_of? Array
+      argument.each {|card| return true if @cards.include? card}
+    end
+    if argument.kind_of? String
+      Card.to_cards(argument).each {|card| return true if @cards.include? card}
+    end
+    false
   end
 
   def combination number

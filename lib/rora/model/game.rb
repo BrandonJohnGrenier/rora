@@ -1,8 +1,9 @@
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
 
 class Game
+  attr_reader :players, :table, :dealer
+  
   def initialize
     
   end
+  
 end

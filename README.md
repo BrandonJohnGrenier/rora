@@ -139,3 +139,118 @@ A starting hand is also referred to as a players pocket cards, or hole cards. A 
 
     # Returns an array of 169 unique starting hands
     unique = StartingHand.unique_starting_hands
+    
+## Decks
+
+### Overview
+A deck consists of 52 playing cards.
+
+    # Creates a new Deck
+    deck = Deck.new
+    
+    # A new deck will have 52 playing cards
+    cards = deck.cards
+    puts cards.size => 52
+    
+    # You can also get size of the deck from the deck itself.
+    puts deck.size => 52
+    
+### Shuffling and Dealing
+When a deck is created the cards are well organized. The deck should be shuffled to randomize the order of the cards before they are dealt.
+    
+    # Shuffling the deck
+    deck.shuffle
+    
+    # The deal method returns one card from the deck.
+    puts deck.size => 52
+    card = deck.deal 
+    puts deck.size => 51
+    
+### Removing Cards
+The remove method takes a variety of arguments.
+
+    # Removes a single card from the deck
+    deck.remove Card.new("AS")
+    
+    # Removes a single card from the deck
+    deck.remove "AS"
+    
+    # Removes multiple cards from the deck
+    deck.remove "AS,KS,QS,JS,TS"
+    
+    # Removes multiple cards from the deck
+    deck.remove [Card.new("AS"), Card.new("KS"), Card.new("QS")]
+    
+    # Removes a starting hand from the deck
+    starting_hand = StartingHand.new "AS, KS"
+    deck.remove starting_hand
+    
+### Inspecting the Deck
+You can query the deck to determine whether it contains a specific card or at least one card in a group.
+
+    # Determines if the Ace of Spades is in the deck.
+    deck.contains Card.new("AS")    
+    
+    # Determines if the Ace of Spades is in the deck.
+    deck.contains "AS"
+    
+    # Determines if any Ace is in the deck.
+    deck.contains [Card.new("AS"), Card.new("AH"), Card.new("AD"), Card.new("AC")]
+    
+    # Determines if any Ace is in the deck.
+    deck.contains "AS,AH,AD,AC"
+    
+    
+### Combinations
+The combination method allows you to enumerate through card subsets. Given a combination value greater than 1, the method will return a two-dimensional array.
+
+
+    # Chooses every possible 2 card combination from the deck. Assuming the deck contains 52
+    # cards, this example will return 1324 2-card combinations.
+    cards = deck.combination 2
+    
+    # Chooses every possible 5 card combination from the deck. Assuming the deck contains 52
+    # cards, this example will return 2,598,960 5-card combinations.
+    cards = deck.combination 5
+    
+## Boards
+
+### Overview
+A board represents the logical table area where community cards are dealt. A board can be setup with either 0, 3, 4 or 5 cards to represent and empty board, the flop, turn, or river (respectively).
+
+    # Creates an empty board.
+    board = Board.new
+    
+    # Creates a board with the flop.
+    board = Board.new "AS,KS,QS"
+    
+    # Creates a board with the flop and turn.
+    board = Board.new "KS,QS,JS,AS"
+    
+    # Create a board with the flop, turn and river cards.
+    board = Board.new "KS,QS,7H,4C,3H"
+    
+### Subsequent Betting Rounds
+An empty board can be populated afterwads.
+
+    board = Board.new
+    board.flop = "AS,KS,QS"
+    board.turn = "4D"
+    board.river = "3D"
+    
+    puts board.size => 5
+    
+### Inspecting the Board
+You can query the board to determine whether it contains a specific card or at least one card in a group.
+
+    # Determines if the Ace of Spades is on the board.
+    board.contains Card.new("AS")    
+    
+    # Determines if the Ace of Spades is on the board.
+    board.contains "AS"
+    
+    # Determines if any Ace is on the board.
+    board.contains [Card.new("AS"), Card.new("AH"), Card.new("AD"), Card.new("AC")]
+    
+    # Determines if any Ace is on the board.
+    board.contains "AS,AH,AD,AC"

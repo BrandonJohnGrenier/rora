@@ -1,7 +1,7 @@
 #
-# The physical table where community cards and burn cards are dealt.
+# The logical table area where community cards are dealt.
 #
-# A board can be initialized with flop, turn and river cards:
+# A board can be initialized with flop, turn and river cards.
 #
 # # A board with the flop set
 # board_one = Board.new "AS,KS,QS"
@@ -73,8 +73,22 @@ class Board
     cds
   end
 
-  def contains_any? array
-    array.each {|card| return true if cards.include? card}
+  # Determines if the board contains the given card.
+  def contains? argument
+    if argument.kind_of? Card
+      return cards.include?(argument)
+    end
+    cards.include? Card.new(argument)
+  end
+
+  # Determines if the board contains any of the given cards.
+  def contains_any? argument
+    if argument.kind_of? Array
+      argument.each {|card| return true if cards.include? card}
+    end
+    if argument.kind_of? String
+      Card.to_cards(argument).each {|card| return true if cards.include? card}
+    end
     false
   end
 
