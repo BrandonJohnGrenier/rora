@@ -1,0 +1,318 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Rora by BrandonJohnGrenier</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Rora</h1>
+        <p>A Ruby library for conducting poker experiments and simulations</p>
+        <p class="view"><a href="https://github.com/BrandonJohnGrenier/Rora">View the Project on GitHub <small>BrandonJohnGrenier/Rora</small></a></p>
+        <ul>
+          <li><a href="https://github.com/BrandonJohnGrenier/Rora/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/BrandonJohnGrenier/Rora/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/BrandonJohnGrenier/Rora">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>Suits and Ranks</h2>
+
+<h3>Suits</h3>
+
+<p>A complete deck of 52 cards will contain exactly four different suits - spades, hearts, clubs and diamonds. Each suit instance along with the equivalent character value are shown below:</p>
+
+<pre><code>Suit::SPADE    // 'S'
+Suit::HEART    // 'H'
+Suit::CLUB     // 'C'
+Suit::DIAMOND  // 'D'
+</code></pre>
+
+<h3>Ranks</h3>
+
+<p>A complete deck of 52 cards will contain exactly thirteen ranks - numerical values 2 -&gt; 10 inclusive, plus four non-numerical cards (Jack, Queen, King, Ace). Instances along with equivalent character values are shown below:</p>
+
+<pre><code>Rank::ACE      // 'A'
+Rank::KING     // 'K'
+Rank::QUEEN    // 'Q'
+Rank::JACK     // 'J'
+Rank::TEN      // 'T'
+Rank::NINE     // '9'
+Rank::EIGHT    // '8'
+Rank::SEVEN    // '7'
+Rank::SIX      // '6'
+Rank::FIVE     // '5'
+Rank::FOUR     // '4'
+Rank::THREE    // '3'
+Rank::TWO      // '2'
+</code></pre>
+
+<h2>Cards</h2>
+
+<h3>Overview</h3>
+
+<p>A playing card is constructed with one suit and one rank. A card can be created in by using the Suit and Rank classes as described above, or their equivalent character values.</p>
+
+<pre><code># Example 1: Creating a card with Rank and Suit instances.
+card = Card.new Rank::ACE, Suit::SPADE
+
+# Example 2: Creating a card with rank and suit values.
+card = Card.new "AS"
+
+# Example 3: Rank and suit values are case insensitive.
+card = Card.new "as"
+</code></pre>
+
+<h3>Creating multiple cards at once</h3>
+
+<p>You can create multiple cards at once by using the to_cards class method. The to_cards takes a series suit-rank characters seperated by commas or white spaces and returns an Array of Cards.</p>
+
+<pre><code># Example 1: Create an array of cards by providing a comma-seperated string.
+cards = Card.to_cards "AS,KS,QS,JS"
+
+# Example 2: Create an array of cards by providing a space-sepearated string.
+cards = Card.to_cards "AS KS QS JS"
+
+# Example 3: Rank and suit values are case insensitive.
+cards = Card.to_cards "as KS qs Js Ts"
+</code></pre>
+
+<h2>Hands</h2>
+
+<h3>Overview</h3>
+
+<p>A hand consists of exactly five cards, and can be constructed by providing an Array of cards or an equivalent sequence of suit-rank character values.</p>
+
+<pre><code># Example 1: Creating a hand with a comma-seperated string.
+hand = Hand.new "AS,KS,QS,JS,TS"
+
+# Example 2: Creating a hand with a space-seperated string.
+hand = Hand.new "AS KS QS JS TS"
+
+# Example 3: Creating a hand with an Array of cards.
+hand = Hand.new [Card.new("AS"), Card.new("KS"), Card.new("QS"), Card.new("JS"), Card.new("TS")]
+
+# Example 4: Creating a hand with an Array of cards, using Card.to_cards
+hand = Hand.new Card.to_cards("AS,KS,QS,JS,TS")
+</code></pre>
+
+<h3>Hand Score</h3>
+
+<p>Each hand in poker has a rank, or score. While many software libraries provide the capability to calculate hand scores, rora implicitly provides you with a score for each hand. </p>
+
+<pre><code># Example 1: A Royal Flush is the highest scoring poker hand.
+royal_flush = Hand.new "AS,KS,QS,JS,TS"
+
+puts royal_flush.score =&gt; 1
+puts royal_flush.name =&gt; 'Royal Flush'
+puts royal_flush.probability =&gt; 0.0015  // Probability of receiving any Royal Flush
+
+# Example 2: A Seven-High High Card is the lowest scoring poker hand.
+seven_high = Hand.new "7S,5H,4H,3C,2C"
+
+puts seven_high.score =&gt; 7642
+puts seven_high.name =&gt; 'High Card'
+puts seven_high.probability =&gt; 0.50    // Probability of receiving any High Card
+</code></pre>
+
+<h3>Hand Detection</h3>
+
+<p>You can query a hand to determine what kind of hand it is.</p>
+
+<pre><code># Example 1: Testing for a straight flush
+puts Hand.new("AS,KS,QS,JS,TS").straight_flush? =&gt; true
+puts Hand.new("AS,KS,QS,JS,TS").two_pair? =&gt; false
+</code></pre>
+
+<p>Hand type detection extends to the following methods:    </p>
+
+<ul>
+<li>flush?</li>
+<li>straight_flush?</li>
+<li>four_of_a_kind?</li>
+<li>full_house?</li>
+<li>straight?</li>
+<li>three_of_a_kind?</li>
+<li>two_pair?</li>
+<li>one_pair?</li>
+<li>high_card?</li>
+</ul><h2>Starting Hands</h2>
+
+<p>Beyond the code samples presented below, the following links provide more information about <a href="http://www.moralesce.com/2012/01/21/holdem-starting-hands/">texas hold'em starting hands</a> and <a href="http://www.moralesce.com/2011/11/26/poker-hand-evaluation/">poker hand evaluation</a>.</p>
+
+<h3>Overview</h3>
+
+<p>A starting hand is also referred to as a players pocket cards, or hole cards. A starting hand consists of exactly two cards held by one player, unseen by opponents. Starting hands can be created by proiding an Array of Cards of an equivalent sequence of suit-rank character values.</p>
+
+<pre><code># Example 1: Creating a starting hand with a comma-seperated string.
+starting_hand = StartingHand.new "AS,KS"
+
+# Example 2: Creating a starting hand with a space-seperated string.
+starting_hand = StartingHand.new "AS KS"
+
+# Example 3: Creating a hand with an Array of cards.
+starting_hand = StartingHand.new [Card.new("AS"), Card.new("KS")]
+
+# Example 4: Creating a starting hand with an Array of cards, using Card.to_cards
+starting_hand = StartingHand.new Card.to_cards("AS,KS")
+</code></pre>
+
+<h3>Creating an array of all starting hands</h3>
+
+<pre><code># Returns an array of all 1324 starting hands.
+all = StartingHand.all_starting_hands
+</code></pre>
+
+<h3>Creating an array of unique starting hands</h3>
+
+<pre><code># Returns an array of 169 unique starting hands
+unique = StartingHand.unique_starting_hands
+</code></pre>
+
+<h2>Decks</h2>
+
+<h3>Overview</h3>
+
+<p>A deck consists of 52 playing cards.</p>
+
+<pre><code># Creates a new Deck
+deck = Deck.new
+
+# A new deck will have 52 playing cards
+cards = deck.cards
+puts cards.size =&gt; 52
+
+# You can also get size of the deck from the deck itself.
+puts deck.size =&gt; 52
+</code></pre>
+
+<h3>Shuffling and Dealing</h3>
+
+<p>When a deck is created the cards are well organized. The deck should be shuffled to randomize the order of the cards before they are dealt.</p>
+
+<pre><code># Shuffling the deck
+deck.shuffle
+
+# The deal method returns one card from the deck.
+puts deck.size =&gt; 52
+card = deck.deal 
+puts deck.size =&gt; 51
+</code></pre>
+
+<h3>Removing Cards</h3>
+
+<p>The remove method takes a variety of arguments.</p>
+
+<pre><code># Removes a single card from the deck
+deck.remove Card.new("AS")
+
+# Removes a single card from the deck
+deck.remove "AS"
+
+# Removes multiple cards from the deck
+deck.remove "AS,KS,QS,JS,TS"
+
+# Removes multiple cards from the deck
+deck.remove [Card.new("AS"), Card.new("KS"), Card.new("QS")]
+
+# Removes a starting hand from the deck
+starting_hand = StartingHand.new "AS, KS"
+deck.remove starting_hand
+</code></pre>
+
+<h3>Inspecting the Deck</h3>
+
+<p>You can query the deck to determine whether it contains a specific card or at least one card in a group.</p>
+
+<pre><code># Determines if the Ace of Spades is in the deck.
+deck.contains Card.new("AS")    
+
+# Determines if the Ace of Spades is in the deck.
+deck.contains "AS"
+
+# Determines if any Ace is in the deck.
+deck.contains [Card.new("AS"), Card.new("AH"), Card.new("AD"), Card.new("AC")]
+
+# Determines if any Ace is in the deck.
+deck.contains "AS,AH,AD,AC"
+</code></pre>
+
+<h3>Combinations</h3>
+
+<p>The combination method allows you to enumerate through card subsets. Given a combination value greater than 1, the method will return a two-dimensional array.</p>
+
+<pre><code># Chooses every possible 2 card combination from the deck. Assuming the deck contains 52
+# cards, this example will return 1324 2-card combinations.
+cards = deck.combination 2
+
+# Chooses every possible 5 card combination from the deck. Assuming the deck contains 52
+# cards, this example will return 2,598,960 5-card combinations.
+cards = deck.combination 5
+</code></pre>
+
+<h2>Boards</h2>
+
+<h3>Overview</h3>
+
+<p>A board represents the logical table area where community cards are dealt. A board can be setup with either 0, 3, 4 or 5 cards to represent and empty board, the flop, turn, or river (respectively).</p>
+
+<pre><code># Creates an empty board.
+board = Board.new
+
+# Creates a board with the flop.
+board = Board.new "AS,KS,QS"
+
+# Creates a board with the flop and turn.
+board = Board.new "KS,QS,JS,AS"
+
+# Create a board with the flop, turn and river cards.
+board = Board.new "KS,QS,7H,4C,3H"
+</code></pre>
+
+<h3>Subsequent Betting Rounds</h3>
+
+<p>An empty board can be populated afterwads.</p>
+
+<pre><code>board = Board.new
+board.flop = "AS,KS,QS"
+board.turn = "4D"
+board.river = "3D"
+
+puts board.size =&gt; 5
+</code></pre>
+
+<h3>Inspecting the Board</h3>
+
+<p>You can query the board to determine whether it contains a specific card or at least one card in a group.</p>
+
+<pre><code># Determines if the Ace of Spades is on the board.
+board.contains Card.new("AS")    
+
+# Determines if the Ace of Spades is on the board.
+board.contains "AS"
+
+# Determines if any Ace is on the board.
+board.contains [Card.new("AS"), Card.new("AH"), Card.new("AD"), Card.new("AC")]
+
+# Determines if any Ace is on the board.
+board.contains "AS,AH,AD,AC"
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/BrandonJohnGrenier">BrandonJohnGrenier</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
