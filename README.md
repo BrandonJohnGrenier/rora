@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/BrandonJohnGrenier/Rora.png?branch=master)](http://travis-ci.org/BrandonJohnGrenier/Rora)
+
 
 ## Suits and Ranks
 
