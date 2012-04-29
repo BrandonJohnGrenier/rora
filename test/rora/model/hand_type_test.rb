@@ -16,19 +16,19 @@ class HandTypeTest < ActiveSupport::TestCase
 
   test "should raise an error when performing a lookup with an invalid key" do
     assert_raise ArgumentError do
-      HandType.get("L")
+      HandType.get "L"
     end
   end
 
   test "should raise an error when performing a lookup with an empty key" do
     assert_raise ArgumentError do
-      HandType.get("")
+      HandType.get ""
     end
   end
 
   test "should raise an error when performing a lookup with a nil key" do
     assert_raise TypeError do
-      HandType.get(nil)
+      HandType.get nil
     end
   end
 

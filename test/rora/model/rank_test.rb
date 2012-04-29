@@ -22,19 +22,19 @@ class RankTest < ActiveSupport::TestCase
 
   test "should raise an error when performing a lookup with an invalid key" do
     assert_raise ArgumentError do
-      Rank.get("L")
+      Rank.get "L"
     end
   end
 
   test "should raise an error when performing a lookup with an empty key" do
     assert_raise ArgumentError do
-      Rank.get("")
+      Rank.get ""
     end
   end
 
   test "should raise an error when performing a lookup with a nil key" do
     assert_raise TypeError do
-      Rank.get(nil)
+      Rank.get nil
     end
   end
 

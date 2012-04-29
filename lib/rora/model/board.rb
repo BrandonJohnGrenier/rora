@@ -92,4 +92,8 @@ class Board
     false
   end
 
+  def to_s
+    "Board: flop=#{@flop.map { |card| "#{card.key}" }.join(",")}"
+  end
+
 end
