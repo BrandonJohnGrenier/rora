@@ -36,6 +36,10 @@ class Table
     @seats.select{|x| x.nil?}.empty?
   end
 
+  def empty?
+    @seats.select{|x| !x.nil?}.empty?
+  end  
+  
   def add player, seat_number=nil
     if !seat_number.nil?
       raise ArgumentError, "Seat number #{seat_number} is already taken by another player." if @seats[seat_number - 1] != nil

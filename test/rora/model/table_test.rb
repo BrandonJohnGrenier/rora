@@ -89,6 +89,15 @@ class TableTest < ActiveSupport::TestCase
     assert_equal false, @table.full?
   end
 
+  test "empty? should return true when the table is empty" do
+    assert_equal true, @table.empty?
+  end
+
+  test "empty? should return false when the table is not empty" do
+    @table.add "player"
+    assert_equal false, @table.empty?
+  end
+
   test "should raise an error when attempting to seat a player at a full table" do
     (1..9).each {|x| @table.add("player#{x}")}
     assert_raise RuntimeError do
