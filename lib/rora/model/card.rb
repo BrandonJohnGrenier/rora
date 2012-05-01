@@ -37,10 +37,6 @@ class Card
     @rank.key + @suit.key
   end
 
-  def value
-    @rank.value + @suit.value
-  end
-
   def name
     "#{@rank.value} of #{@suit.value}s"
   end

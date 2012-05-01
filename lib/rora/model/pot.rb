@@ -2,14 +2,15 @@
 # The sum of money that players wager during a single hand or game.
 #
 class Pot
-
   attr_reader :value
 
   def initialize
     @value = 0
   end
-
+ 
+  # Adds the specified bet to the pot
   def add bet
+    raise ArgumentError if bet < 0
     @value += bet
     self
   end

@@ -2,6 +2,10 @@ require File.expand_path("../../rora_test", File.dirname(__FILE__))
 
 class CardTest < ActiveSupport::TestCase
 
+  def setup
+    @card = Card.new("AS")
+  end
+
   test "should be able to create a card with the specified rank and suit" do
     card = Card.new(Rank::ACE, Suit::SPADE)
     assert_equal card.rank, Rank::ACE
@@ -18,20 +22,25 @@ class CardTest < ActiveSupport::TestCase
     assert_raise ArgumentError do
       card = Card.new("A")
     end
+    assert_raise ArgumentError do
+      card = Card.new("ASK")
+    end
+  end
+
+  test "a card should have an id" do
+    assert_equal 1927, @card.id
   end
 
   test "a card id should be equal to the product of the card suit id and rank id" do
-    card = Card.new(Rank::ACE, Suit::SPADE)
-    assert_equal card.id, (Rank::ACE.id * Suit::SPADE.id)
+    assert_equal @card.id, (Rank::ACE.id * Suit::SPADE.id)
   end
 
-  test "a card value should be equal to the concatenation of the card suit value and rank value" do
-    card = Card.new(Rank::ACE, Suit::SPADE)
-    assert_equal card.value, (Rank::ACE.value + Suit::SPADE.value)
+  test "a card should have a key" do
+    assert_equal "AS", @card.key
   end
 
   test "a card key should be equal to the concatenation of the card suit key and rank key" do
-    assert_equal "AS", Card.new("AS").key
+    assert_equal "AS", (Rank::ACE.key + Suit::SPADE.key)
   end
 
   test "a card should have a name" do

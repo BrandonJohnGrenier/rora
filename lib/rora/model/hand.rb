@@ -10,7 +10,7 @@
 # hand = Hand.new("ACKCJS9H4H")
 #
 class Hand
-  attr_reader :cards, :hand_repository
+  attr_reader :cards
 
   def initialize cards
     @hand_repository = HandRepository.instance

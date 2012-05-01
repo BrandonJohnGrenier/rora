@@ -65,6 +65,10 @@ class Board
     @river = cd
   end
 
+  def size
+    cards.size
+  end
+
   def cards
     cds = Array.new
     cds += @flop if !@flop.nil?
