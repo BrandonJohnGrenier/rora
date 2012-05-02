@@ -7,7 +7,7 @@ class TableTest < ActiveSupport::TestCase
   end
 
   test "a table should have 9 seats by default" do
-    assert_equal 9, @table.seats.size
+    assert_equal 9, @table.size
   end
 
   test "a new table should have a deck of 52 cards" do
@@ -15,7 +15,7 @@ class TableTest < ActiveSupport::TestCase
   end
 
   test "a new table should have an empty board" do
-    assert_equal 0, @table.board.cards.size
+    assert_equal 0, @table.board.size
   end
 
   test "a new table should have a pot with no money" do
@@ -35,7 +35,7 @@ class TableTest < ActiveSupport::TestCase
   end
 
   test "should be able to configure the number of seats at a table" do
-    assert_equal 6, Table.new(6).seats.size
+    assert_equal 6, Table.new(6).size
   end
 
   test "should raise an error when a table is created with less than two seats" do
@@ -46,12 +46,12 @@ class TableTest < ActiveSupport::TestCase
 
   test "should be able to seat a player at the table" do
     @table.add "player"
-    assert_equal "player", @table.seats[0]
+    assert_equal "player", @table.seat[0].player
   end
 
   test "should be able to seat a player at a specific seat at the table" do
     @table.add "player", 4
-    assert_equal "player", @table.seats[3]
+    assert_equal "player", @table.seat[3].player
   end
 
   test "should raise an error when attempting to seat a player at a seat that is already taken" do
@@ -74,9 +74,9 @@ class TableTest < ActiveSupport::TestCase
   end
 
   test "should find the first available seat when no seat number is specified" do
-    @table.add("player1", 1).add("player2", 2).add("player 3", 3).add("player5", 5)
-    @table.add "player4"
-    assert_equal @table.seats[3], "player4"
+    @table.add("Player 1", 1).add("Player 2", 2).add("Player 3", 3).add("Player 5", 5)
+    @table.add "Player 4"
+    assert_equal @table.seat[3].player, "Player 4"
   end
 
   test "full? should return true when the table is full" do
@@ -107,9 +107,9 @@ class TableTest < ActiveSupport::TestCase
 
   test "should be able to remove a player" do
     @table.add "player1"
-    assert_not_nil @table.seats[0]
+    assert_equal true,  @table.seat[0].taken?
     @table.remove "player1"
-    assert_nil @table.seats[0]
+    assert_equal false, @table.seat[0].taken?
   end
 
 end
