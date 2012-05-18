@@ -13,6 +13,6 @@ Gem::Specification.new do |s|
   s.test_files  = Dir.glob("{test/**/*}")
 
   s.add_runtime_dependency "rake", ">= 0.9.0"
-  s.add_runtime_dependency "active_support", ">= 3.0.0"
+  s.add_runtime_dependency "active_support", ">= 3.2.3"
   s.add_runtime_dependency "rspec-mocks", ">= 2.10.1"
 end
