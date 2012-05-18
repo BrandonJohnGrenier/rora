@@ -14,4 +14,5 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency "rake", ">= 0.9.0"
   s.add_runtime_dependency "active_support", ">= 3.0.0"
+  s.add_runtime_dependency "rspec-mocks", ">= 2.10.1"
 end
