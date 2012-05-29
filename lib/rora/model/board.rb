@@ -65,10 +65,12 @@ class Board
     @river = cd
   end
 
+  # Returns the number of community cards that have been dealt.
   def size
     cards.size
   end
 
+  # Returns the community cards that have been dealt
   def cards
     cds = Array.new
     cds += @flop if !@flop.nil?

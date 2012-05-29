@@ -6,7 +6,7 @@
 # basic doubly-linked list.
 #
 class Seat
-  attr_accessor :prev, :next, :player
+  attr_accessor :prev, :next, :player, :button
   attr_reader :number
 
   def initialize number
@@ -17,6 +17,11 @@ class Seat
   # Determines whether the seat is taken.
   def taken?
     return !@player.nil?
+  end
+
+  # Determines whether this seat has the dealer button.
+  def button?
+    return !button.nil?
   end
 
   def to_s

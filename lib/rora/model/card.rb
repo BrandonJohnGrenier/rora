@@ -64,7 +64,7 @@ class Card
   end
 
   def to_s
-    "Card: name='#{name}' value='#{@rank.key}#{@suit.key}' id=#{id}"
+    "Card => #{name}"
   end
 
 end

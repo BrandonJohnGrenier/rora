@@ -25,6 +25,15 @@ class SeatTest < ActiveSupport::TestCase
     assert_equal true, @seat.taken?
   end
 
+  test "the seat should not have the dealer button" do
+    assert_equal false, @seat.button?
+  end
+
+  test "the seat should have the dealer button" do
+    @seat.button = true
+    assert_equal true, @seat.button?
+  end
+
   test "should return a string representation of the seat" do
     assert_equal "Seat number 2", @seat.to_s
   end

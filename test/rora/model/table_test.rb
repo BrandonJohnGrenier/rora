@@ -39,7 +39,7 @@ class TableTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when a table is created with less than two seats" do
-    assert_raise ArgumentError do
+    assert_raise ArgumentError, "A table must have at least two seats" do
       Table.new 1
     end
   end
@@ -56,19 +56,19 @@ class TableTest < ActiveSupport::TestCase
 
   test "should raise an error when attempting to seat a player at a seat that is already taken" do
     @table.add "player1", 4
-    assert_raise ArgumentError do
+    assert_raise ArgumentError, "Seat number 4 is already taken by another player" do
       @table.add "player2", 4
     end
   end
 
   test "should raise an error when attempting to seat a player at a seat that does not exist" do
-    assert_raise ArgumentError do
+    assert_raise ArgumentError, "Seat number 11 does not exist at this table" do
       @table.add "player", 11
     end
-    assert_raise ArgumentError do
+    assert_raise ArgumentError, "Seat number 0 does not exist at this table"  do
       @table.add "player", 0
     end
-    assert_raise ArgumentError do
+    assert_raise ArgumentError, "Seat number -3 does not exist at this table"  do
       @table.add "player", -3
     end
   end
@@ -110,6 +110,56 @@ class TableTest < ActiveSupport::TestCase
     assert_equal true,  @table.seat[0].taken?
     @table.remove "player1"
     assert_equal false, @table.seat[0].taken?
+  end
+
+  test "should return the next player to act after the specified seat" do
+    @table.add("Player 1", 1).add("Player 5", 5)
+    seat = @table.next_player @table.seat[0]
+    assert_equal "Player 5", seat.player
+  end
+
+  test "should return the next player to act even when the specified seat is empty" do
+    @table.add("Player 1", 1).add("Player 5", 5)
+    seat = @table.next_player @table.seat[3]
+    assert_equal "Player 5", seat.player
+  end
+
+  test "should loop around the table to find the next player to act" do
+    @table.add("Player 1", 1).add("Player 5", 5)
+    seat = @table.next_player @table.seat[7]
+    assert_equal "Player 1", seat.player
+  end
+
+  test "should raise an error when trying to find the next player to act when there are less than two players at the table" do
+    @table.add("Player 1", 1)
+    assert_raise RuntimeError, "Cannot find the next player when there are less than two players at the table" do
+      @table.next_player @table.seat[7]
+    end
+  end
+
+  test "should return the previous player to act before the specified seat" do
+    @table.add("Player 1", 1).add("Player 5", 5)
+    seat = @table.previous_player @table.seat[4]
+    assert_equal "Player 1", seat.player
+  end
+
+  test "should return the previous player to act even when the specified seat is empty" do
+    @table.add("Player 1", 1).add("Player 5", 5)
+    seat = @table.previous_player @table.seat[3]
+    assert_equal "Player 1", seat.player
+  end
+
+  test "should loop around the table to find the previous player to act" do
+    @table.add("Player 1", 3).add("Player 5", 5)
+    seat = @table.previous_player @table.seat[1]
+    assert_equal "Player 5", seat.player
+  end
+
+  test "should raise an error when trying to find the previous player to act when there are less than two players at the table" do
+    @table.add("Player 1", 1)
+    assert_raise RuntimeError, "Cannot find the previous player when there are less than two players at the table" do
+      @table.previous_player @table.seat[7]
+    end
   end
 
 end

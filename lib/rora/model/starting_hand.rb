@@ -99,4 +99,8 @@ class StartingHand
     StartingHandRepository.instance.distinct_starting_hands
   end
 
+  def to_s
+    "StartingHand => " + @cards[0].to_s + ", " + @cards[1].to_s
+  end
+
 end
