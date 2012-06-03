@@ -19,23 +19,31 @@ class Table
     end
   end
 
-  def assign_button
-    index = find_button
+  def pass_the_buck
+    index = find_button.number - 1
     @seats[index].button = nil
     next_player(@seats[index]).button = true
   end
 
   def find_button
     @seats.each_index do |x|
-      return x if @seats[x].button?
+      return @seats[x] if @seats[x].button?
     end
     @seats.each_index do |x|
-      return x if @seats[x].taken?
+      return @seats[x] if @seats[x].taken?
     end
   end
 
+  def find_small_blind
+    
+  end
+  
+  def find_big_blind
+    
+  end
+  
   def place_small_blind_bet
-    index = find_button
+    index = find_button.number - 1
     @seats[index].next
   end
 

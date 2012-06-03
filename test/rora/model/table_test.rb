@@ -162,4 +162,37 @@ class TableTest < ActiveSupport::TestCase
     end
   end
 
+  test "should return the seat holding the button" do
+    @table.add("Player 1", 1).add("Player 2", 2).add("Player 3", 3).add("Player 5", 5)
+    @table.seat[4].button = true
+    assert_equal "Player 5", @table.find_button.player
+  end
+
+  test "should return the first seat occupied by a player if no seat is holding the button" do
+    @table.add("Player 1", 1).add("Player 2", 2).add("Player 3", 3).add("Player 5", 5)
+    assert_equal "Player 1", @table.find_button.player
+  end
+
+  test "should pass the buck to players in clockwise order" do
+    @table.add("Player 1", 1).add("Player 2", 2).add("Player 3", 3).add("Player 5", 5).add("Player 7", 7)
+    
+    @table.pass_the_buck
+    assert_equal "Player 2", @table.find_button.player
+    
+    @table.pass_the_buck
+    assert_equal "Player 3", @table.find_button.player
+    
+    @table.pass_the_buck
+    assert_equal "Player 5", @table.find_button.player
+    
+    @table.pass_the_buck
+    assert_equal "Player 7", @table.find_button.player
+    
+    @table.pass_the_buck
+    assert_equal "Player 1", @table.find_button.player
+    
+    @table.pass_the_buck
+    assert_equal "Player 2", @table.find_button.player
+  end
+  
 end
