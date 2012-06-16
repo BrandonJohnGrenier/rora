@@ -1,5 +1,5 @@
 #
-# A poker tables where players compete for pots.
+# A poker table where players compete for pots.
 #
 class Table
   attr_reader :board, :deck, :pot
@@ -20,12 +20,13 @@ class Table
   end
 
   def pass_the_buck
-    index = find_button.number - 1
+    index = the_button.number - 1
     @seats[index].button = nil
-    next_player(@seats[index]).button = true
+    the_seat_after(@seats[index]).button = true
   end
 
-  def find_button
+  def the_button
+    raise RuntimeError, "There are fewer than two players at the table" if players.size < 2
     @seats.each_index do |x|
       return @seats[x] if @seats[x].button?
     end
@@ -34,33 +35,31 @@ class Table
     end
   end
 
-  def find_small_blind
-    
-  end
-  
-  def find_big_blind
-    
-  end
-  
-  def place_small_blind_bet
-    index = find_button.number - 1
-    @seats[index].next
+  def the_small_blind
+    raise RuntimeError, "There are fewer than two players at the table" if players.size < 2
+    players.size == 2 ? the_button : the_seat_after(the_button)
   end
 
-  def place_big_blind_bet
-
+  def the_big_blind
+    raise RuntimeError, "There are fewer than two players at the table" if players.size < 2
+    the_seat_after the_small_blind
   end
 
-  def next_player seat
-    raise RuntimeError, "Cannot find the next player when there are less than two players at the table" if players.size < 2
-    next_seat = seat.next
-    return next_seat.taken? ? next_seat : next_player(next_seat)
+  def under_the_gun
+    raise RuntimeError, "There are fewer than two players at the table" if players.size < 2
+    players.size == 2 ? the_big_blind : the_seat_after(the_big_blind)
   end
 
-  def previous_player seat
-    raise RuntimeError, "Cannot find the previous player when there are less than two players at the table" if players.size < 2
-    previous_seat = seat.prev
-    return previous_seat.taken? ? previous_seat : previous_player(previous_seat)
+  def the_seat_after seat
+    raise RuntimeError, "There are fewer than two players at the table" if players.size < 2
+    this_seat = seat.next
+    return this_seat.taken? ? this_seat : the_seat_after(this_seat)
+  end
+
+  def the_seat_before seat
+    raise RuntimeError, "There are fewer than two players at the table" if players.size < 2
+    this_seat = seat.prev
+    return this_seat.taken? ? this_seat : the_seat_before(this_seat)
   end
 
   def with argument
