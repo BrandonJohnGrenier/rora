@@ -39,7 +39,7 @@ class SuitTest < ActiveSupport::TestCase
   end
 
   test "should generate a readable string representation" do
-    assert_equal "Suit: id=47, key='S', value='Spade'", Suit::SPADE.to_s
+    assert_equal "Suit: Spades", Suit::SPADE.to_s
   end
 
 end

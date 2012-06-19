@@ -48,7 +48,7 @@ class CardTest < ActiveSupport::TestCase
   end
 
   test "should generate a readable string representation" do
-    assert_equal "Card => Ace of Spades", Card.new("AS").to_s
+    assert_equal "Card: Ace of Spades", Card.new("AS").to_s
   end
 
   test "should convert an arbitrarily long string of characters into an array of cards" do

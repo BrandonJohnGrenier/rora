@@ -25,7 +25,7 @@ class Seat
   end
 
   def to_s
-    "Seat number #{@number}"
+    "Seat: #{@number}"
   end
 
 end

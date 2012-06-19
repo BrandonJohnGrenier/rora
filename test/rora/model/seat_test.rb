@@ -35,7 +35,7 @@ class SeatTest < ActiveSupport::TestCase
   end
 
   test "should return a string representation of the seat" do
-    assert_equal "Seat number 2", @seat.to_s
+    assert_equal "Seat: 2", @seat.to_s
   end
 
 end

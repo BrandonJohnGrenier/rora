@@ -64,7 +64,7 @@ class Card
   end
 
   def to_s
-    "Card => #{name}"
+    "Card: #{name}"
   end
 
 end

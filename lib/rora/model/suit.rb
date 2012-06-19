@@ -25,7 +25,7 @@ class Suit
   end
 
   def to_s
-    "Suit: id=#{@id}, key='#{@key}', value='#{@value}'"
+    "Suit: #{@value}s"
   end
 
   def == suit

@@ -25,11 +25,11 @@ class Rank
     self.values.each do |rank|
       return rank if rank.key.casecmp(key) == 0
     end
-    raise ArgumentError, "No rank exists for key " + key
+    raise ArgumentError, "No rank exists for key '#{key}'"
   end
 
   def to_s
-    "Rank: id=#{@id}, key='#{@key}', value='#{@value}'"
+    "Rank: #{@value}"
   end
 
   class << self

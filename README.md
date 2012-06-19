@@ -33,7 +33,7 @@ A complete deck of 52 cards will contain exactly thirteen ranks - numerical valu
 ## Cards
 
 ### Overview
-A playing card is constructed with one suit and one rank. A card can be created in by using the Suit and Rank classes as described above, or their equivalent character values.
+A playing card is constructed with exactly one suit and one rank. A card can be created  by using the Suit and Rank classes as described above, or their equivalent character values.
 
     # Example 1: Creating a card with Rank and Suit instances.
     card = Card.new Rank::ACE, Suit::SPADE
@@ -46,7 +46,7 @@ A playing card is constructed with one suit and one rank. A card can be created 
 
 ### Creating multiple cards at once
 
-You can create multiple cards at once by using the to_cards class method. The to_cards takes a series suit-rank characters seperated by commas or white spaces and returns an Array of Cards.
+You can create multiple cards at once by using the to_cards class method. The to_cards takes a series suit-rank characters seperated by commas or white spaces and returns an array of cards.
 
     # Example 1: Create an array of cards by providing a comma-seperated string.
     cards = Card.to_cards "AS,KS,QS,JS"
@@ -60,7 +60,7 @@ You can create multiple cards at once by using the to_cards class method. The to
 ## Hands
 
 ### Overview
-A hand consists of exactly five cards, and can be constructed by providing an Array of cards or an equivalent sequence of suit-rank character values.
+A hand consists of exactly five cards, and can be constructed by providing an array of cards or an equivalent sequence of suit-rank character values.
 
     # Example 1: Creating a hand with a comma-seperated string.
     hand = Hand.new "AS,KS,QS,JS,TS"
@@ -71,7 +71,7 @@ A hand consists of exactly five cards, and can be constructed by providing an Ar
     # Example 3: Creating a hand with an Array of cards.
     hand = Hand.new [Card.new("AS"), Card.new("KS"), Card.new("QS"), Card.new("JS"), Card.new("TS")]
     
-    # Example 4: Creating a hand with an Array of cards, using Card.to_cards
+    # Example 4: Creating a hand with an array of cards, using Card.to_cards
     hand = Hand.new Card.to_cards("AS,KS,QS,JS,TS")
     
 ### Hand Score  
@@ -92,7 +92,7 @@ Each hand in poker has a rank, or score. While many software libraries provide t
     puts seven_high.name => 'High Card'
     puts seven_high.probability => 0.50    // Probability of receiving any High Card
     
-### Hand Detection    
+### Hand Type Detection    
     
 You can query a hand to determine what kind of hand it is.
 
@@ -111,13 +111,20 @@ Hand type detection extends to the following methods:
 - two_pair?
 - one_pair?
 - high_card?
+
+### Hand Type Probability
+
+You can query a hand to determine the probability of drawing that type of hand.
+
+    # Example 1: Determine the probability of a Royal Flush
+    puts Hand.new("AS,KS,QS,JS,TS").probability => 0.0015
     
 ## Starting Hands
 
 Beyond the code samples presented below, the following links provide more information about [texas hold'em starting hands](http://www.moralesce.com/2012/01/21/holdem-starting-hands/) and [poker hand evaluation](http://www.moralesce.com/2011/11/26/poker-hand-evaluation/).
 
 ### Overview
-A starting hand is also referred to as a players pocket cards, or hole cards. A starting hand consists of exactly two cards held by one player, unseen by opponents. Starting hands can be created by proiding an Array of Cards of an equivalent sequence of suit-rank character values.
+A starting hand is also referred to as a player's pocket cards, or hole cards. A starting hand consists of exactly two cards, and can be constructed by providing an array of cards or an equivalent sequence of suit-rank character values.
 
     # Example 1: Creating a starting hand with a comma-seperated string.
     starting_hand = StartingHand.new "AS,KS"
@@ -133,7 +140,9 @@ A starting hand is also referred to as a players pocket cards, or hole cards. A 
    
 ### Creating an array of all starting hands
 
-    # Returns an array of all 1324 starting hands.
+Given a deck of 52 cards, choosing any two card yields 1326 distinct 2 card combinations
+
+    # Returns an array of all 1326 starting hands.
     all = StartingHand.all_starting_hands
     
     
@@ -188,27 +197,35 @@ The remove method takes a variety of arguments.
     deck.remove starting_hand
     
 ### Inspecting the Deck
-You can query the deck to determine whether it contains a specific card or at least one card in a group.
-
-    # Determines if the Ace of Spades is in the deck.
-    deck.contains Card.new("AS")    
+You can query the deck to determine whether it contains a specific card or at least one card in a group.  
     
     # Determines if the Ace of Spades is in the deck.
     deck.contains "AS"
     
-    # Determines if any Ace is in the deck.
-    deck.contains [Card.new("AS"), Card.new("AH"), Card.new("AD"), Card.new("AC")]
+    # Determines if the Ace of Spades is in the deck.
+    deck.contains Card.new("AS")
     
     # Determines if any Ace is in the deck.
-    deck.contains "AS,AH,AD,AC"
+    deck.contains_any "AS,AH,AD,AC"
+    
+     # Determines if any Ace is in the deck.
+    deck.contains_any [Card.new("AS"), Card.new("AH"), Card.new("AD"), Card.new("AC")]
+    
+    # Determines if there are any cards in the deck
+    deck.empty?
+    
+    # Returns the number of Aces left in the deck
+    deck.count_cards_with_rank Rank::ACE
+    
+    # Returns the number of Clubs left in the deck
+    deck.count_cards_with_suit Suit::CLUB
     
     
 ### Combinations
 The combination method allows you to enumerate through card subsets. Given a combination value greater than 1, the method will return a two-dimensional array.
 
-
     # Chooses every possible 2 card combination from the deck. Assuming the deck contains 52
-    # cards, this example will return 1324 2-card combinations.
+    # cards, this example will return 1326 2-card combinations.
     cards = deck.combination 2
     
     # Chooses every possible 5 card combination from the deck. Assuming the deck contains 52

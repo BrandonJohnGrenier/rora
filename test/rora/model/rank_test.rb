@@ -21,13 +21,13 @@ class RankTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when performing a lookup with an invalid key" do
-    assert_raise ArgumentError do
+    assert_raise_message "No rank exists for key 'L'", ArgumentError do
       Rank.get "L"
     end
   end
 
   test "should raise an error when performing a lookup with an empty key" do
-    assert_raise ArgumentError do
+    assert_raise_message  "No rank exists for key ''", ArgumentError do
       Rank.get ""
     end
   end
@@ -39,7 +39,7 @@ class RankTest < ActiveSupport::TestCase
   end
 
   test "should generate a readable string representation" do
-    assert_equal "Rank: id=41, key='A', value='Ace'", Rank::ACE.to_s
+    assert_equal "Rank: Ace", Rank::ACE.to_s
   end
 
 end

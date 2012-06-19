@@ -15,7 +15,6 @@ class Hand
   def initialize cards
     @hand_repository = HandRepository.instance
     @cards = cards.kind_of?(Array) ? cards : Card.to_cards(cards)
-
     raise ArgumentError, "Exactly 5 cards are required to create a hand, #{cards.size} provided" if @cards.size != 5
     raise ArgumentError, "The hand contains duplicate cards" if @cards.uniq.length != @cards.length
   end
