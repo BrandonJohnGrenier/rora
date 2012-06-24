@@ -30,6 +30,8 @@ class BoardTest < ActiveSupport::TestCase
 
   test "the board should have three cards if the board was initialized with the flop" do
     assert_equal 3, Board.new("AS,KS,QS").cards.size
+    b = Board.new("AS,KS,QS")
+    puts b.flop
   end
 
   test "the board should have four cards if the board was initialized with the flop and turn" do

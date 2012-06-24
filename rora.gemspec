@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "rora"
-  s.version     = "0.0.5"
+  s.version     = "0.0.6"
   s.platform    = Gem::Platform::RUBY
   s.summary     = "A Ruby poker library"
   s.description = "A Ruby library for conducting poker experiments and simulations"

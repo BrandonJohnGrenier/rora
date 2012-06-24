@@ -47,7 +47,7 @@ class Table
 
   def under_the_gun
     raise RuntimeError, "There are fewer than two players at the table" if players.size < 2
-    players.size == 2 ? the_big_blind : the_seat_after(the_big_blind)
+    the_seat_after(the_big_blind)
   end
 
   def the_seat_after seat
@@ -75,8 +75,8 @@ class Table
     self
   end
 
-  def seat
-    @seats
+  def seat i
+    @seats[i - 1]
   end
 
   def size
@@ -123,8 +123,11 @@ class Table
   end
 
   def remove player
-    @seats.delete_if {|seat| seat.player == player}
-    self
+    @seats.each_index do |x|
+      if @seats[x].player == player
+        @seats[x].player = nil
+      end
+    end
   end
 
 end

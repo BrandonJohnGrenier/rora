@@ -235,7 +235,7 @@ The combination method allows you to enumerate through card subsets. Given a com
 ## Boards
 
 ### Overview
-A board represents the logical table area where community cards are dealt. A board can be setup with either 0, 3, 4 or 5 cards to represent and empty board, the flop, turn, or river (respectively).
+A board represents the logical table area where community cards are dealt. A board can be setup with either 0, 3, 4 or 5 unique cards to represent and empty board, the flop, turn, or river (respectively).
 
     # Creates an empty board.
     board = Board.new
@@ -250,7 +250,7 @@ A board represents the logical table area where community cards are dealt. A boa
     board = Board.new "KS,QS,7H,4C,3H"
     
 ### Subsequent Betting Rounds
-An empty board can be populated afterwads.
+An empty board can be populated after constrution as well - indeed, this is the most common usage.
 
     board = Board.new
     board.flop = "AS,KS,QS"
@@ -269,7 +269,180 @@ You can query the board to determine whether it contains a specific card or at l
     board.contains "AS"
     
     # Determines if any Ace is on the board.
-    board.contains [Card.new("AS"), Card.new("AH"), Card.new("AD"), Card.new("AC")]
+    board.contains_any [Card.new("AS"), Card.new("AH"), Card.new("AD"), Card.new("AC")]
     
     # Determines if any Ace is on the board.
-    board.contains "AS,AH,AD,AC"
+    board.contains_any "AS,AH,AD,AC"
+    
+    # You can query to the board for flop, turn and river cards.
+    puts board.flop => '2H', '3C', 'JH'
+    puts board.turn => 'AS'
+    puts board.river => 'JS'
+    
+    # You can query the board to return all cards on the board
+    puts board.cards => '2H', '3C', 'JH', 'AS', 'JS'
+    
+## Pots
+
+A pot represents the sum of money that players compete for during a hand of poker.
+
+    # Creates a new pot.
+    pot = Pot.new
+    
+### Adding Money to the Pot
+
+You can add positive sums of money to the pot. At the moment the pot assumes only one kind of (implicit) currency.
+
+    # Add money to the pot
+    pot.add(5) 
+    puts pot.value => '5'
+    
+    # Chain add operations
+    pot.add(5).add(5).add(5)
+    puts pot.value => '15'
+    
+    # Add decimal values to the pot
+    pot.add(2.50).add(1.25)
+    puts pot.value => '3.75'
+    
+    # The to_s representation returns formatted monetary amount
+    pot.add(300)
+    puts pot.to_s => '$300.00'
+
+## Tables
+
+A poker table where players compete for pots. A newly created table will have one deck of 52 cards, one  pot with zero dollars and one empty board. You can specify the number of seats at the table - if not provided, a table will be created with 9 seats. A table must have a minimum of 2 seats.
+
+    # Creates a table with 9 seats
+    table = Table.new
+    
+    # Creates a table with 6 seats
+    table = Table.new 6
+    
+### Swapping pots, boards and decks
+
+You can provide a table with different decks, boards and pots. This configuration is chainable, as shown in the example below:
+
+    deck = Deck.new
+    pot = Pot.new
+    board = Board.new
+    …
+    # Creates a table, and configures the table to use the specified board, pot and deck.
+    table = Table.new
+   	table.with(deck).with(board).with(pot)
+   	
+### Managing players
+A poker table won't do us any good unless we have a few players sitting in on a game. We can add players to the table using the add method:
+	
+	table = Table.new
+    james = Player.new("James")
+    sally = Player.new("Sally")
+    
+    # james will automatcially take seat number 1
+    table.add james  
+    
+    # sally will automatcially take seat number 2  
+    table.add sally    
+    
+At a real poker table, players are free to sit at any available seat at the table. You can specify which seat a player sits at:
+
+	table = Table.new
+    james = Player.new("James")
+    sally = Player.new("Sally")
+    
+    # james will sit at seat number 2
+    table.add james 2  
+    
+    # sally will sit at seat number 6
+    table.add sally 6  
+    
+This index is not zero based. In other words, seat 1 is the first seat, you cannot specify to sit at 'seat 0', there's no such thing! If the specified seat is already taken by another player an exception is raised. If the specified seat doesn't exist (you specify to seat a player at seat 11 at a 9-seated table) and exception will be raised.    
+
+You can remove players by using the tables' remove method: 
+
+    # Create a table and a couple of players
+	table = Table.new
+    james = Player.new("James")
+    sally = Player.new("Sally")
+    
+    # james will automatcially take seat number 1
+    table.add james  
+    
+    # james will be removed, seat number 1 will be free
+    table.remove james
+    
+### Inspecting the table
+
+    # Returns the number of seats at the table
+    table.size
+
+    # Determines if all of the seats at the table are occupied
+    table.full?
+    
+    # Determines if none of the seats at the table are occupied
+    table.empty?
+    
+    # Returns all players sitting at the table as an array
+    table.players
+    
+    # Returns seat number 3
+    third_seat = table.seat(3)
+    
+### Poker positions at the table
+
+There are a few positions that are relevant in a poker game, and the rora api makes it trivial to identify key positions. The dealer, or 'button' is a rotating position - after every hand a new dealer is chosen by moving the 'button' or 'puck' in a clockwise fashion around the table.
+
+    # Returns the seat with the button.
+    table.the_button
+
+The small blind sits to the immediate left of the dealer, and is required to post one half sized bet before before a hand begins.
+
+    # Returns the seat with the small blind.
+    table.the_small_blind
+    
+    # In a heads up (2-player) game, the small blind is also the button!
+	table = Table.new
+    james = Player.new("James")
+    sally = Player.new("Sally")
+    
+    puts table.the_button.player.name => 'James'
+    puts table.the_small_blind.player.name => 'James'
+    puts table.the_big_blind.player.name => 'Sally'
+    
+The big blind sits to the immediate left of the small blind, and must post one full sized bet before a hand begins.   
+    
+    # Returns the seat with the big blind.
+    table.the_big_blind 
+    
+UTG sits to the immediate left of the big blind, and is the first player to act in the pre-flop (i.e. first) betting round. The player to the left the big blind is always the first player to act in the preflop betting round. In a heads up (i.e. 2-player game), the 'next' player is our other player, the small blind.
+    
+    # Returns the seat that is first to act, or 'under the gun'
+    table.under_the_gun   
+    
+    # In a heads up (2-player) game, the small blind is also the first to act (under the gun)!
+	table = Table.new
+    james = Player.new("James")
+    sally = Player.new("Sally")
+    
+    puts table.the_small_blind.player.name => 'James'
+    puts table.the_big_blind.player.name => 'Sally'
+    puts table.under_the_gun.player.name => 'James'
+    
+
+### Gaps in player positions
+There is no need for players to sit directly beside each other. Rora maintains an internal linked list of players and their relative positions, so there can be gaps between seated players.
+
+    # Create a table with three players
+	table = Table.new
+    james = Player.new("James")
+    sally = Player.new("Sally")
+    frank  = Player.new("Frank")
+    
+    # Seats 1, 3, 4, 5 and 7 will be unoccupied, that's ok!
+    table.add james 2  
+    table.add sally 6 
+    table.add frank 8
+    
+    puts table.the_small_blind.player.name => 'James'
+    puts table.the_big_blind.player.name => 'Sally'
+    puts table.under_the_gun.player.name => 'Frank'

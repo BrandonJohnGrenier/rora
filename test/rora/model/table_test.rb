@@ -46,12 +46,12 @@ class TableTest < ActiveSupport::TestCase
 
   test "should be able to seat a player at the table" do
     @table.add "player"
-    assert_equal "player", @table.seat[0].player
+    assert_equal "player", @table.seat(1).player
   end
 
   test "should be able to seat a player at a specific seat at the table" do
     @table.add "player", 4
-    assert_equal "player", @table.seat[3].player
+    assert_equal "player", @table.seat(4).player
   end
 
   test "should raise an error when attempting to seat a player at a seat that is already taken" do
@@ -76,7 +76,7 @@ class TableTest < ActiveSupport::TestCase
   test "should find the first available seat when no seat number is specified" do
     @table.add("Player 1", 1).add("Player 2", 2).add("Player 3", 3).add("Player 5", 5)
     @table.add "Player 4"
-    assert_equal @table.seat[3].player, "Player 4"
+    assert_equal @table.seat(4).player, "Player 4"
   end
 
   test "full? should return true when the table is full" do
@@ -107,64 +107,67 @@ class TableTest < ActiveSupport::TestCase
 
   test "should be able to remove a player" do
     @table.add "player1"
-    assert_equal true,  @table.seat[0].taken?
+    assert_equal true,  @table.seat(1).taken?
+    assert_equal 9, @table.size
+
     @table.remove "player1"
-    assert_equal false, @table.seat[0].taken?
+    assert_equal false, @table.seat(1).taken?
+    assert_equal 9, @table.size
   end
 
   test "should return the next player to act after the specified seat" do
     @table.add("Player 1", 1).add("Player 5", 5)
-    seat = @table.the_seat_after @table.seat[0]
+    seat = @table.the_seat_after @table.seat(1)
     assert_equal "Player 5", seat.player
   end
 
   test "should return the next player to act even when the specified seat is empty" do
     @table.add("Player 1", 1).add("Player 5", 5)
-    seat = @table.the_seat_after @table.seat[3]
+    seat = @table.the_seat_after @table.seat(4)
     assert_equal "Player 5", seat.player
   end
 
   test "should loop around the table to find the next player to act" do
     @table.add("Player 1", 1).add("Player 5", 5)
-    seat = @table.the_seat_after @table.seat[7]
+    seat = @table.the_seat_after @table.seat(8)
     assert_equal "Player 1", seat.player
   end
 
   test "should raise an error when trying to find the next player to act when there are less than two players at the table" do
     @table.add("Player 1", 1)
     assert_raise RuntimeError, "Cannot find the next player when there are less than two players at the table" do
-      @table.the_seat_after @table.seat[7]
+      @table.the_seat_after @table.seat(8)
     end
   end
 
   test "should return the previous player to act before the specified seat" do
     @table.add("Player 1", 1).add("Player 5", 5)
-    seat = @table.the_seat_before @table.seat[4]
+    seat = @table.the_seat_before @table.seat(5)
     assert_equal "Player 1", seat.player
   end
 
   test "should return the previous player to act even when the specified seat is empty" do
     @table.add("Player 1", 1).add("Player 5", 5)
-    seat = @table.the_seat_before @table.seat[3]
+    seat = @table.the_seat_before @table.seat(4)
     assert_equal "Player 1", seat.player
   end
 
   test "should loop around the table to find the previous player to act" do
     @table.add("Player 1", 3).add("Player 5", 5)
-    seat = @table.the_seat_before @table.seat[1]
+    seat = @table.the_seat_before @table.seat(2)
     assert_equal "Player 5", seat.player
   end
 
   test "should raise an error when trying to find the previous player to act when there are less than two players at the table" do
     @table.add("Player 1", 1)
     assert_raise RuntimeError, "Cannot find the previous player when there are less than two players at the table" do
-      @table.the_seat_before @table.seat[7]
+      @table.the_seat_before @table.seat(8)
     end
   end
 
   test "should return the seat holding the button" do
     @table.add("Player 1", 1).add("Player 2", 2).add("Player 3", 3).add("Player 5", 5)
-    @table.seat[4].button = true
+    @table.seat(5).button = true
     assert_equal "Player 5", @table.the_button.player
   end
 
@@ -199,7 +202,7 @@ class TableTest < ActiveSupport::TestCase
   test "should return the seat containing the small blind" do
     @table.add("Player 1", 1).add("Player 2", 2).add("Player 3", 3).add("Player 5", 5).add("Player 7", 7)
     assert_equal "Player 2", @table.the_small_blind.player
-    
+
     @table.pass_the_buck
     assert_equal "Player 3", @table.the_small_blind.player
   end
@@ -210,6 +213,12 @@ class TableTest < ActiveSupport::TestCase
     assert_equal "Player 1", @table.the_small_blind.player
   end
 
+  test "the small blind should also be the first to act when there are only two players" do
+    @table.add("Player 1", 1).add("Player 2", 2)
+    assert_equal "Player 1", @table.the_button.player
+    assert_equal "Player 1", @table.under_the_gun.player
+  end  
+  
   test "should return the seat containing the big blind" do
     @table.add("Player 1", 1).add("Player 2", 2).add("Player 3", 3).add("Player 5", 5).add("Player 7", 7)
     assert_equal "Player 3", @table.the_big_blind.player

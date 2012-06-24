@@ -68,8 +68,8 @@ class Game
     seat_number = @table.the_seat_after(first_to_act).number
 
     while seat_number != number
-      @table.seat[(seat_number - 1)].player.act
-      seat_number = @table.the_seat_after(@table.seat[(seat_number - 1)]).number
+      @table.seat(seat_number).player.act
+      seat_number = @table.the_seat_after(@table.seat(seat_number)).number
     end
   end
 

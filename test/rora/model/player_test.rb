@@ -24,12 +24,12 @@ class PlayerTest < ActiveSupport::TestCase
 
   test "a player should be able to join a poker game" do
     @player.join_game @game
-    assert_equal @player, @game.table.seat[0].player
+    assert_equal @player, @game.table.seat(1).player
   end
 
   test "a player should be able to join a poker game at a seat of their choosing" do
     @player.join_game @game, 3
-    assert_equal @player, @game.table.seat[2].player
+    assert_equal @player, @game.table.seat(3).player
   end
 
   test "a player should not be able to join a poker game when the poker table is full" do
