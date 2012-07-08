@@ -19,10 +19,10 @@ class CardTest < ActiveSupport::TestCase
   end
 
   test "should raise an exception when attempting to create a card with an invalid string value" do
-    assert_raise ArgumentError do
+    assert_raise_message "A is an invalid card sequence", ArgumentError do
       card = Card.new("A")
     end
-    assert_raise ArgumentError do
+    assert_raise_message "ASK is an invalid card sequence", ArgumentError do
       card = Card.new("ASK")
     end
   end
@@ -48,7 +48,7 @@ class CardTest < ActiveSupport::TestCase
   end
 
   test "should generate a readable string representation" do
-    assert_equal "Card: Ace of Spades", Card.new("AS").to_s
+    assert_equal "Ace of Spades", Card.new("AS").to_s
   end
 
   test "should convert an arbitrarily long string of characters into an array of cards" do

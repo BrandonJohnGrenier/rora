@@ -39,7 +39,7 @@ class TableTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when a table is created with less than two seats" do
-    assert_raise ArgumentError, "A table must have at least two seats" do
+    assert_raise_message "A table must have at least two seats", ArgumentError do
       Table.new 1
     end
   end
@@ -56,19 +56,19 @@ class TableTest < ActiveSupport::TestCase
 
   test "should raise an error when attempting to seat a player at a seat that is already taken" do
     @table.add "player1", 4
-    assert_raise ArgumentError, "Seat number 4 is already taken by another player" do
+    assert_raise_message "Seat number 4 is already taken by another player", ArgumentError do
       @table.add "player2", 4
     end
   end
 
   test "should raise an error when attempting to seat a player at a seat that does not exist" do
-    assert_raise ArgumentError, "Seat number 11 does not exist at this table" do
+    assert_raise_message "Seat number 11 does not exist at this table", ArgumentError do
       @table.add "player", 11
     end
-    assert_raise ArgumentError, "Seat number 0 does not exist at this table"  do
+    assert_raise_message "Seat number 0 does not exist at this table", ArgumentError  do
       @table.add "player", 0
     end
-    assert_raise ArgumentError, "Seat number -3 does not exist at this table"  do
+    assert_raise_message "Seat number -3 does not exist at this table", ArgumentError  do
       @table.add "player", -3
     end
   end
@@ -100,7 +100,7 @@ class TableTest < ActiveSupport::TestCase
 
   test "should raise an error when attempting to seat a player at a full table" do
     (1..9).each {|x| @table.add("player#{x}")}
-    assert_raise RuntimeError do
+    assert_raise_message "Cannot add player, the table is full", RuntimeError do
       @table.add "player 10"
     end
   end
@@ -135,7 +135,7 @@ class TableTest < ActiveSupport::TestCase
 
   test "should raise an error when trying to find the next player to act when there are less than two players at the table" do
     @table.add("Player 1", 1)
-    assert_raise RuntimeError, "Cannot find the next player when there are less than two players at the table" do
+    assert_raise_message "There are fewer than two players at the table", RuntimeError do
       @table.the_seat_after @table.seat(8)
     end
   end
@@ -160,7 +160,7 @@ class TableTest < ActiveSupport::TestCase
 
   test "should raise an error when trying to find the previous player to act when there are less than two players at the table" do
     @table.add("Player 1", 1)
-    assert_raise RuntimeError, "Cannot find the previous player when there are less than two players at the table" do
+    assert_raise_message "There are fewer than two players at the table", RuntimeError do
       @table.the_seat_before @table.seat(8)
     end
   end

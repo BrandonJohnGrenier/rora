@@ -10,7 +10,7 @@ class Pot
  
   # Adds the specified bet to the pot
   def add bet
-    raise ArgumentError if bet < 0
+    raise ArgumentError, "Can only add positive values" if bet < 0
     @value += bet
     self
   end

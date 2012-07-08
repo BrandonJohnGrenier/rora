@@ -7,19 +7,19 @@ class HandTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when a hand is not created with 5 cards" do
-    assert_raise ArgumentError do
+    assert_raise_message "Exactly 5 cards are required to create a hand, 2 provided", ArgumentError do
       Hand.new [Card.new("AS"), Card.new("KS")]
     end
   end
 
   test "should raise an error when a hand is not created with 10 characters" do
-    assert_raise ArgumentError do
+    assert_raise_message "Exactly 5 cards are required to create a hand, 8 provided", ArgumentError do
       Hand.new "ASKSQSJS"
     end
   end
 
   test "should raise an error when creating a hand with duplicate cards" do
-    assert_raise ArgumentError do
+    assert_raise_message "The hand contains duplicate cards", ArgumentError do
       Hand.new "AS KS JS AS KS"
     end
   end

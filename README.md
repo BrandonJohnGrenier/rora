@@ -284,6 +284,7 @@ You can query the board to determine whether it contains a specific card or at l
     
 ## Pots
 
+
 A pot represents the sum of money that players compete for during a hand of poker.
 
     # Creates a new pot.

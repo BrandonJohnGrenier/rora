@@ -2,24 +2,20 @@ require File.expand_path("../../rora_test", File.dirname(__FILE__))
 
 class StartingHandTest < ActiveSupport::TestCase
 
-  def setup
-    @hand = StartingHand.new "ASKS"
-  end
-
   test "should raise an error when a starting hand is not created with 2 cards" do
-    assert_raise ArgumentError do
+    assert_raise_message "Exactly 2 cards are required to create a starting hand, 3 provided", ArgumentError do
       StartingHand.new [Card.new("AS"), Card.new("KS"), Card.new("QS")]
     end
   end
 
   test "should raise an error when a starting hand is not created with 4 characters" do
-    assert_raise ArgumentError do
+    assert_raise_message "Exactly 2 cards are required to create a starting hand, 4 provided", ArgumentError do
       StartingHand.new "ASKSQSJS"
     end
   end
 
   test "should raise an error when creating a starting hand with duplicate cards" do
-    assert_raise ArgumentError do
+    assert_raise_message "The starting hand contains duplicate cards", ArgumentError do
       StartingHand.new "ASAS"
     end
   end

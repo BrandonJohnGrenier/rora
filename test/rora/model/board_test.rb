@@ -7,19 +7,19 @@ class BoardTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when a board is created with less than 3 cards" do
-    assert_raise ArgumentError do
+    assert_raise_message "3 to 5 cards are required to create a board, 2 cards provided", ArgumentError do
       Board.new "AS,KS"
     end
   end
 
   test "should raise an error when a board is created with more than 5 cards" do
-    assert_raise ArgumentError do
+    assert_raise_message "3 to 5 cards are required to create a board, 6 cards provided", ArgumentError do
       Board.new "AS,KS,QS,JS,TS,9S"
     end
   end
 
   test "should raise an error when a board is created with duplicate cards" do
-    assert_raise ArgumentError do
+    assert_raise_message "The board contains duplicate cards", ArgumentError do
       Board.new "AS KS JS AS KS"
     end
   end
@@ -30,8 +30,6 @@ class BoardTest < ActiveSupport::TestCase
 
   test "the board should have three cards if the board was initialized with the flop" do
     assert_equal 3, Board.new("AS,KS,QS").cards.size
-    b = Board.new("AS,KS,QS")
-    puts b.flop
   end
 
   test "the board should have four cards if the board was initialized with the flop and turn" do
@@ -43,20 +41,20 @@ class BoardTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when a flop is not created with 3 cards" do
-    assert_raise ArgumentError do
-      Board.new.flop "AS,KS"
+    assert_raise_message "3 cards are required on the flop, 2 cards provided", ArgumentError do
+      Board.new.flop= "AS,KS"
     end
   end
 
   test "should raise an error when a flop is set with duplicate cards" do
-    assert_raise ArgumentError do
-      Board.new.flop "AS AS JS"
+    assert_raise_message "The flop contains duplicate cards", ArgumentError do
+      Board.new.flop= "AS AS JS"
     end
   end
 
   test "should raise an error when a flop is set with no cards" do
-    assert_raise ArgumentError do
-      Board.new.flop []
+    assert_raise_message "Cannot deal a flop with empty array of cards", ArgumentError do
+      Board.new.flop= []
     end
   end
 
@@ -68,14 +66,14 @@ class BoardTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when a turn card is dealt before the flop has been dealt" do
-    assert_raise RuntimeError do
+    assert_raise_message "The flop must be dealt before the turn card is dealt", RuntimeError do
       board = Board.new
       board.turn = "AS"
     end
   end
 
-  test "should raise an error when the turn card has already been dealt" do
-    assert_raise ArgumentError do
+  test "should raise an error when the turn card has already been dealt on the flop" do
+    assert_raise_message "The board already contains the Ace of Hearts", ArgumentError do
       board = Board.new
       board.flop= "AS,AH,AD"
       board.turn= "AH"
@@ -91,15 +89,15 @@ class BoardTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when the river card is dealt before the turn card has been dealt" do
-    assert_raise RuntimeError do
+    assert_raise_message "The turn card must be dealt before the river card is dealt", RuntimeError do
       board = Board.new
       board.flop = "AS KS QS"
       board.river = "JS"
     end
   end
 
-  test "should raise an error when the river card has already been dealt" do
-    assert_raise ArgumentError do
+  test "should raise an error when the river card was dealt on a previous street" do
+    assert_raise_message "The board already contains the Ace of Spades", ArgumentError do
       board = Board.new
       board.flop = "AS,KS,QS"
       board.turn = "JS"

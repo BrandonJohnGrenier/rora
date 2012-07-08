@@ -30,7 +30,7 @@ class HandType
     self.values.each do |type|
       return type if type.key.casecmp(key) == 0
     end
-    raise ArgumentError, "No hand type exists for key " + key
+    raise ArgumentError, "No hand type exists for key '#{key}'"
   end
 
   def to_s

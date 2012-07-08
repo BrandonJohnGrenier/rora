@@ -15,19 +15,19 @@ class HandTypeTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when performing a lookup with an invalid key" do
-    assert_raise ArgumentError do
+    assert_raise_message "No hand type exists for key 'L'", ArgumentError do
       HandType.get "L"
     end
   end
 
   test "should raise an error when performing a lookup with an empty key" do
-    assert_raise ArgumentError do
+    assert_raise_message "No hand type exists for key ''", ArgumentError do
       HandType.get ""
     end
   end
 
   test "should raise an error when performing a lookup with a nil key" do
-    assert_raise TypeError do
+    assert_raise_message "can't convert nil into String", TypeError do
       HandType.get nil
     end
   end

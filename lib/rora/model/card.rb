@@ -23,7 +23,7 @@ class Card
       @suit = args[1]
     end
     if(args.size == 1)
-      raise ArgumentError, "#{args} is an invalid card sequence" if args[0].length != 2
+      raise ArgumentError, "#{args[0]} is an invalid card sequence" if args[0].length != 2
       @rank = Rank.get(args[0][0])
       @suit = Suit.get(args[0][1])
     end
@@ -64,7 +64,7 @@ class Card
   end
 
   def to_s
-    "Card: #{name}"
+    "#{name}"
   end
 
 end

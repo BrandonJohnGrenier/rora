@@ -21,7 +21,7 @@ class Suit
     self.values.each do |suit|
       return suit if suit.key.casecmp(key) == 0
     end
-    raise ArgumentError, "No suit exists for key " + key
+    raise ArgumentError, "No suit exists for key '#{key}'"
   end
 
   def to_s

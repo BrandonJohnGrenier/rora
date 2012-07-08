@@ -21,13 +21,13 @@ class SuitTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when performing a lookup with an invalid key" do
-    assert_raise ArgumentError do
+    assert_raise_message "No suit exists for key 'L'", ArgumentError do
       Suit.get("L")
     end
   end
 
   test "should raise an error when performing a lookup with an empty key" do
-    assert_raise ArgumentError do
+    assert_raise_message "No suit exists for key ''",  ArgumentError do
       Suit.get("")
     end
   end

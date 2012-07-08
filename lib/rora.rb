@@ -1,4 +1,5 @@
 require 'rora/utils/game_logger'
+require 'rora/utils/equity_calculator'
 require 'rora/model/board'
 require 'rora/model/card'
 require 'rora/model/deck'

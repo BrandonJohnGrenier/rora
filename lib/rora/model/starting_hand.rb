@@ -4,13 +4,12 @@
 #
 class StartingHand
   attr_reader :id, :key, :cards
-
   def initialize cards
     @cards = Array.new, @id = 1, @key = 1
 
     @cards = cards.kind_of?(Array) ? cards : Card.to_cards(cards)
     raise ArgumentError, "Exactly 2 cards are required to create a starting hand, #{@cards.size} provided" if @cards.size != 2
-    raise ArgumentError, "The hand contains duplicate cards" if @cards.uniq.length != @cards.length
+    raise ArgumentError, "The starting hand contains duplicate cards" if @cards.uniq.length != @cards.length
 
     @cards.each {|card| @id *= card.id}
     @cards.each {|card| @key *= card.rank.id}
@@ -99,8 +98,20 @@ class StartingHand
     StartingHandRepository.instance.distinct_starting_hands
   end
 
+  def eql? starting_hand
+    self == starting_hand
+  end
+
+  def == starting_hand
+    self.id == starting_hand.id
+  end
+
+  def hash
+    return self.id
+  end
+
   def to_s
-    "StartingHand => " + @cards[0].to_s + ", " + @cards[1].to_s
+    @cards[0].to_s + ", " + @cards[1].to_s
   end
 
 end

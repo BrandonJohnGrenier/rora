@@ -7,7 +7,7 @@ class SeatTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when a seat is created with a seat number less than 1" do
-    assert_raise ArgumentError do
+    assert_raise_message "Must create a seat number with a value of 1 or greater", ArgumentError do
       Seat.new 0
     end
   end

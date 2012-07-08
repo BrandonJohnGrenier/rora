@@ -1,7 +1,7 @@
 require File.expand_path("../../rora_test", File.dirname(__FILE__))
 
 class PotTest < ActiveSupport::TestCase
-
+  
   def setup
     @pot = Pot.new
   end
@@ -11,7 +11,7 @@ class PotTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when attempting to add a negative value to the pot" do
-    assert_raise ArgumentError do
+    assert_raise_message "Can only add positive values", ArgumentError do
       @pot.add -0.50
     end
   end

@@ -27,7 +27,7 @@ class RankTest < ActiveSupport::TestCase
   end
 
   test "should raise an error when performing a lookup with an empty key" do
-    assert_raise_message  "No rank exists for key ''", ArgumentError do
+    assert_raise_message "No rank exists for key ''", ArgumentError do
       Rank.get ""
     end
   end
