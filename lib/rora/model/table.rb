@@ -36,17 +36,14 @@ class Table
   end
 
   def the_small_blind
-    raise RuntimeError, "There are fewer than two players at the table" if players.size < 2
     players.size == 2 ? the_button : the_seat_after(the_button)
   end
 
   def the_big_blind
-    raise RuntimeError, "There are fewer than two players at the table" if players.size < 2
     the_seat_after the_small_blind
   end
 
   def under_the_gun
-    raise RuntimeError, "There are fewer than two players at the table" if players.size < 2
     the_seat_after(the_big_blind)
   end
 
