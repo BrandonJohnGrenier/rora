@@ -5,19 +5,27 @@ class EquityCalculator
     raise ArgumentError, "Can only calculate equity on the flop or turn" if (board.cards.size < 3 || board.cards.size > 4)
     raise ArgumentError, "There are duplicate cards" if EquityCalculator.duplicates? starting_hands, board
 
-    equity_results = Hash[starting_hands.map{ |starting_hand| [starting_hand, 0] }]
+    results = Hash[starting_hands.map{ |starting_hand| [starting_hand, 0] }]
 
     deck = Deck.new.remove(EquityCalculator.cards(starting_hands, board))
     deck.combination(5 - board.cards.size).each do | cards |
-      EquityCalculator.showdown(equity_results, starting_hands, board.cards + cards)
+      EquityCalculator.showdown(results, starting_hands, board.cards + cards)
     end
 
     total = deck.combination(5 - board.cards.size).size
 
-    equity_results.each do |result|
-      winning_pct = result[1].quo(total) * 100.00
-      puts "#{result[0].value} has " + sprintf("%.02f" , winning_pct) + "% equity "
+    equities = Hash.new
+    results.each do |result|
+      equity = Equity.new
+      equity.value = result[1].quo(total) * 100.00
+      equity.total_hands = total
+      equity.hands_won = result[1]
+      equity.hands_tied = total - result[1]
+      equity.starting_hand = result[0]
+      equities[result[0]] = equity
     end
+    
+    equities
   end
 
   private
@@ -29,7 +37,7 @@ class EquityCalculator
       best_hand = get_best_hand(board_cards, starting_hand)
       scores[starting_hand] = best_hand.score
     end
-    
+
     winner = scores.min_by{|key,value| value}
     winner_score = winner[1]
 
