@@ -119,9 +119,10 @@ class BoardTest < ActiveSupport::TestCase
     assert_equal false, @board.contains?(Card.new("3D"))
   end
 
-  test "should return true if the boad does contain the given card" do
-    assert_equal true, @board.contains?("TS")
-    assert_equal true, @board.contains?(Card.new("AS"))
+  test "should return true if the board contains the given card" do
+    b = Board.new "AS,KS,QS,JS,TS"
+    assert_equal true, b.contains?("TS")
+    assert_equal true, b.contains?(Card.new("AS"))
   end
 
   test "should return false if the board does not contain any of the given cards" do
