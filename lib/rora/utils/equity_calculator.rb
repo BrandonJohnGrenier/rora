@@ -1,15 +1,22 @@
 class EquityCalculator
   
-  def self.calculate_equity starting_hands, board
+  def self.calculate_equity(starting_hands, board = Board.new)
     raise ArgumentError, "Must have at least two starting hands for equity comparison" if (starting_hands.nil? || starting_hands.size < 2)
-    raise ArgumentError, "Can only calculate equity on the flop or turn" if (board.cards.size < 3 || board.cards.size > 4)
-    raise ArgumentError, "There are duplicate cards" if EquityCalculator.duplicates? starting_hands, board
+    raise ArgumentError, "There are duplicate cards" if EquityCalculator.contains_duplicates? starting_hands, board
 
     results = Hash[starting_hands.map{ |starting_hand| [starting_hand, 0] }]
 
-    deck = Deck.new.remove(EquityCalculator.cards(starting_hands, board))
+    deck = Deck.new.remove(EquityCalculator.merge_cards(starting_hands, board))
+    i = 0
+    start = Time.now
     deck.combination(5 - board.cards.size).each do | cards |
       EquityCalculator.showdown(results, starting_hands, board.cards + cards)
+      i = i + 1
+      if i % 5000 == 0
+        current = Time.now
+        delta = ((current - start) * 1000.0).to_i
+        puts "round #{i}, time #{delta}"
+      end
     end
 
     total = deck.combination(5 - board.cards.size).size
@@ -24,7 +31,7 @@ class EquityCalculator
       equity.starting_hand = result[0]
       equities[result[0]] = equity
     end
-    
+
     equities
   end
 
@@ -53,20 +60,20 @@ class EquityCalculator
     end
   end
 
-  def self.get_best_hand board_cards, starting_hand
+  def self.get_best_hand(board_cards, starting_hand)
     hands = []
     (board_cards + starting_hand.cards).combination(5).to_a.each { |cards| hands << Hand.new(cards) }
     hands.sort {|x,y| x.score <=> y.score }[0]
   end
 
-  def self.duplicates? starting_hands, board
-    cards = EquityCalculator.cards starting_hands, board
+  def self.contains_duplicates? starting_hands, board
+    cards = EquityCalculator.merge_cards(starting_hands, board)
     cards.uniq.length != cards.length
   end
 
-  def self.cards starting_hands, board
+  def self.merge_cards(starting_hands, board)
     cards = board.cards
-    starting_hands.each { |starting_hand | cards = cards + starting_hand.cards }
+    starting_hands.each { |starting_hand | cards.concat(starting_hand.cards) }
     cards
   end
 

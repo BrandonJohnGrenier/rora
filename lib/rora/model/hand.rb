@@ -65,7 +65,7 @@ class Hand
 
   # Determines if this hand is a flush.
   def flush?
-    for i in 0..@cards.size - 2 do
+    for i in 0..(@cards.size - 2) do
       return false if @cards[i].suit != @cards[i+1].suit
     end
     true
