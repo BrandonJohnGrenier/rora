@@ -111,4 +111,28 @@ class DeckTest < ActiveSupport::TestCase
     assert_equal true, @deck.contains_any?("AH,KH,QH,JH,KS")
   end
 
+  test "should remove all spades from the deck" do
+    @deck.remove_all(Suit::SPADE)
+    assert_equal 39, @deck.cards.size
+    assert_equal 0, @deck.count_cards_with_suit(Suit::SPADE)
+  end
+
+  test "should remove all kings from the deck" do
+    @deck.remove_all(Rank::KING)
+    assert_equal 48, @deck.cards.size
+    assert_equal 0, @deck.count_cards_with_rank(Rank::KING)
+  end
+
+  test "should retain all spades in the deck" do
+    @deck.retain_all(Suit::SPADE)
+    assert_equal 13, @deck.cards.size
+    assert_equal 13, @deck.count_cards_with_suit(Suit::SPADE)
+  end
+
+  test "should retain all kings in the deck" do
+    @deck.retain_all(Rank::KING)
+    assert_equal 4, @deck.cards.size
+    assert_equal 4, @deck.count_cards_with_rank(Rank::KING)
+  end
+
 end

@@ -16,6 +16,28 @@ class Deck
     end
   end
 
+  # Retains all cards with the given suit or rank, removing all others.
+  def retain_all argument
+    if argument.kind_of? Suit
+      @cards = @cards.find_all{|card| card.suit.eql?(argument) }
+    end
+    if argument.kind_of? Rank
+      @cards = @cards.find_all{|card| card.rank.eql?(argument) }
+    end
+    self
+  end
+
+  # Removes all cards with the given suit or rank, retaining all others.
+  def remove_all argument
+    if argument.kind_of? Suit
+      @cards = @cards.find_all{|card| !card.suit.eql?(argument) }
+    end
+    if argument.kind_of? Rank
+      @cards = @cards.find_all{|card| !card.rank.eql?(argument) }
+    end
+    self
+  end
+
   # Shuffles all cards in the deck.
   def shuffle
     @cards.shuffle!

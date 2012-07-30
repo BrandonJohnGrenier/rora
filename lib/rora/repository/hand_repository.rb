@@ -7,7 +7,7 @@ class HandRepository
   def initialize
     @hands = Array.new
     @table = Hash.new
-    CSV.foreach("lib/rora/hands.csv") do |row|
+    CSV.foreach("lib/rora/5-card-hands.csv") do |row|
       @table[row[1].to_i] = [row[0].to_i, row[3], row[4], row[5].to_f]
     end
   end
