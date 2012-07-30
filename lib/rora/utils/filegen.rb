@@ -1,5 +1,5 @@
 class Filegen
-
+  
   def initialize
     @scores = {}
   end
@@ -16,12 +16,14 @@ class Filegen
                   key = get_key(cards)
                   hand = get_best_hand(cards)
                   if(!hand.flush?)
-                    raise RuntimeError, "Key collision for key #{key}, two different hand scores: #{@scores[key]} vs #{hand.score}" if(@scores.has_key?(key) && hand.score != @scores[key])
-                    puts "#{key},#{hand.score}"
-                    @scores[key] = hand.score
-                    if(@scores.size >= 6150)
-                      puts "Generated all 6150 7-card (non-flush) hands"
-                      return
+                    raise RuntimeError, "Collision detected for key #{key}, two different hand scores: #{@scores[key]} vs #{hand.score}" if(@scores.has_key?(key) && hand.score != @scores[key])
+                    if(!@scores.has_key?(key))
+                      @scores[key] = hand.score
+                      puts "#{key},#{hand.score}"
+                      if(@scores.size >= 6150)
+                        puts "Generated all 6150 7-card (non-flush) hands"
+                        return
+                      end
                     end
                   end
                 end
@@ -39,7 +41,7 @@ class Filegen
       generate_hand_rankings(suit, 6, 1)
       generate_hand_rankings(suit, 7, 0)
     end
-    # file = File.open("7CH.csv", "w")
+    # file = File.open("7-card-hands.csv", "w")
     # @scores.each {|key, value| file.write("#{key},#{value}") }
     # file.close
   end
@@ -48,7 +50,7 @@ class Filegen
     Deck.new.retain_all(suit).combination(i).each do |suited|
       Deck.new.remove_all(suit).combination(j).each do |remainder|
         cards = suited + remainder
-        @scores[get_flush_key(cards)] = get_best_hand(cards)
+        @scores[get_flush_key(cards, i)] = get_best_hand(cards)
       end
     end
   end
@@ -57,7 +59,7 @@ class Filegen
     cards.inject(1) {|product, card| product * card.rank.id }
   end
 
-  def get_flush_key(cards)
+  def get_flush_key(cards, count)
     cards.inject(1) {|product, card| product * card.id }
   end
 
