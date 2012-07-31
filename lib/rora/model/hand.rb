@@ -21,16 +21,12 @@ class Hand
 
   # Returns the hand id.
   def id
-    i = 1
-    @cards.each { |card| i = i * card.id }
-    i
+    @cards.inject(1) {|product, card| product * card.id }
   end
 
   # Returns the hand hash key.
   def hash_key
-    j = 1
-    @cards.each { |card| j = j * card.rank.id  }
-    flush? ? (j * 67) : j
+    @cards.inject(1) {|product, card| product * card.rank.id } * (flush? ? 67 : 1)
   end
 
   # Returns the hand value.

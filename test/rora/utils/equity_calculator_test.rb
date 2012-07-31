@@ -6,14 +6,14 @@ class BoardTest < ActiveSupport::TestCase
     @board = Board.new
   end
 
-  test "should return equity calculations for a heads up game" do
-    starting_hands = [StartingHand.new("2H2S"), StartingHand.new("3H3S")]
-    
-    equities = EquityCalculator.calculate_equity(starting_hands, @board)
-
-    assert_equity_value "6.77", "2H2S", equities
-    assert_equity_value "86.77", "3H3S", equities
-  end
+#  test "should return equity calculations for a heads up game" do
+#    starting_hands = [StartingHand.new("2H2S"), StartingHand.new("3H3S")]
+#    
+#    equities = EquityCalculator.calculate_equity(starting_hands, @board)
+#
+#    assert_equity_value "6.77", "2H2S", equities
+#    assert_equity_value "86.77", "3H3S", equities
+#  end
 
 #  test "should raise an error when the board contains less than 3 cards" do
 #    starting_hands = [StartingHand.new("2H2S"), StartingHand.new("3H3S")]
