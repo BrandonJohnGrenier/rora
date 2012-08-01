@@ -44,10 +44,6 @@ class StartingHandTest < ActiveSupport::TestCase
     assert_equal false, StartingHand.new("ASKH").pocket_pair?
   end
 
-  test "the starting hand should have an id that is equal to the product of the card ids" do
-    assert_equal StartingHand.new("ASKH").id, (Card.new("AS").id * Card.new("KH").id)
-  end
-
   test "the starting hand should have a key that is equal to the product of the card rank ids when the starting hand is unsuited" do
     assert_equal StartingHand.new("ASKH").key, (Card.new("AS").rank.id * Card.new("KH").rank.id)
   end

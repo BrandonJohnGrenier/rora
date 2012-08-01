@@ -29,10 +29,6 @@ class Card
     end
   end
 
-  def id
-    @rank.id * @suit.id
-  end
-
   def key
     @rank.key + @suit.key
   end
@@ -46,11 +42,11 @@ class Card
   end
 
   def == card
-    self.id == card.id
+    self.key == card.key
   end
 
   def hash
-    return self.id
+    return self.key.ord
   end
 
   def self.to_cards string

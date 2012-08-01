@@ -36,8 +36,8 @@ class Suit
     private :new
   end
 
-  HEART = new(43, "H", "Heart")
-  SPADE = new(47, "S", "Spade")
-  CLUB = new(53, "C", "Club")
-  DIAMOND = new(59, "D", "Diamond")
+  HEART = new(0, "H", "Heart")
+  SPADE = new(1, "S", "Spade")
+  CLUB = new(8, "C", "Club")
+  DIAMOND = new(57, "D", "Diamond")
 end

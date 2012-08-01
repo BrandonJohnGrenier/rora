@@ -24,24 +24,16 @@ class HandTest < ActiveSupport::TestCase
     end
   end
 
-  test "the hand should have an id" do
-    assert_equal 7193866898674063, @hand.id
-  end
-
-  test "the hand id should be equal to the product of each card id contained in the hand" do
-    assert_equal @hand.id, (Card.new("AS").id * Card.new("KS").id * Card.new("QS").id * Card.new("JS").id * Card.new("TS").id)
-  end
-
   test "the hand should have a hash key" do
-    assert_equal 2101589603, @hand.hash_key
+    assert_equal 2101589603, @hand.key
   end
 
-  test "the hash key should be equal to the product of each card rank id in the hand times" do
-    assert_equal Hand.new("ASACAHJSTS").hash_key, (Card.new("AS").rank.id * Card.new("AC").rank.id * Card.new("AH").rank.id * Card.new("JS").rank.id * Card.new("TS").rank.id)
+  test "the hand key should be equal to the product of each card rank id in the hand times" do
+    assert_equal Hand.new("ASACAHJSTS").key, (Card.new("AS").rank.id * Card.new("AC").rank.id * Card.new("AH").rank.id * Card.new("JS").rank.id * Card.new("TS").rank.id)
   end
 
-  test "the hash key should be equal to the product of each card rank id in the hand times 67 when the hand is a flush" do
-    assert_equal @hand.hash_key, (Card.new("AS").rank.id * Card.new("KS").rank.id * Card.new("QS").rank.id * Card.new("JS").rank.id * Card.new("TS").rank.id * 67)
+  test "the hand key should be equal to the product of each card rank id in the hand times 67 when the hand is a flush" do
+    assert_equal @hand.key, (Card.new("AS").rank.id * Card.new("KS").rank.id * Card.new("QS").rank.id * Card.new("JS").rank.id * Card.new("TS").rank.id * 67)
   end
 
   test "the hand should have a value" do
@@ -58,10 +50,6 @@ class HandTest < ActiveSupport::TestCase
 
   test "the hand should have a score" do
     assert_equal 1, @hand.score
-  end
-
-  test "the hand should have a probability" do
-    assert_equal 0.0015, @hand.probability
   end
 
   test "the hand should have a name" do

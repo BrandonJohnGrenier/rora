@@ -3,7 +3,8 @@
 # one player and remain hidden from the other players.
 #
 class StartingHand
-  attr_reader :id, :key, :cards
+  attr_reader :key, :cards
+  
   def initialize cards
     @cards = Array.new, @id = 1, @key = 1
 
@@ -11,9 +12,7 @@ class StartingHand
     raise ArgumentError, "Exactly 2 cards are required to create a starting hand, #{@cards.size} provided" if @cards.size != 2
     raise ArgumentError, "The starting hand contains duplicate cards" if @cards.uniq.length != @cards.length
 
-    @cards.each {|card| @id *= card.id}
-    @cards.each {|card| @key *= card.rank.id}
-    @key = suited? ? @key * 67 : @key
+    @key = @cards.inject(1) {|product, card| product * card.rank.id } * (suited? ? 67 : 1)
   end
 
   # Returns all cards contained in the starting hand.

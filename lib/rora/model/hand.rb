@@ -11,7 +11,7 @@
 #
 class Hand
   attr_reader :cards
-
+  
   def initialize cards
     @hand_repository = HandRepository.instance
     @cards = cards.kind_of?(Array) ? cards : Card.to_cards(cards)
@@ -19,13 +19,8 @@ class Hand
     raise ArgumentError, "The hand contains duplicate cards" if @cards.uniq.length != @cards.length
   end
 
-  # Returns the hand id.
-  def id
-    @cards.inject(1) {|product, card| product * card.id }
-  end
-
-  # Returns the hand hash key.
-  def hash_key
+  # Returns the hand key.
+  def key
     @cards.inject(1) {|product, card| product * card.rank.id } * (flush? ? 67 : 1)
   end
 
@@ -115,7 +110,7 @@ class Hand
   private
 
   def resolve_hand_attribute value
-    @hand_repository.find(hash_key)[value]
+    @hand_repository.find(key)[value]
   end
 
 end

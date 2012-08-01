@@ -1,5 +1,5 @@
 require 'rora/utils/game_logger'
-require 'rora/utils/filegen'
+require 'rora/utils/hand_ranking_generator'
 require 'rora/utils/equity_calculator'
 require 'rora/model/board'
 require 'rora/model/card'

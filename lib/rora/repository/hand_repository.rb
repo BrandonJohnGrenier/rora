@@ -3,17 +3,23 @@ require 'singleton'
 
 class HandRepository
   include Singleton
-
+  
   def initialize
     @hands = Array.new
-    @table = Hash.new
+    
+    @five_card_table = Hash.new
     CSV.foreach("lib/rora/5-card-hands.csv") do |row|
-      @table[row[1].to_i] = [row[0].to_i, row[3], row[4], row[5].to_f]
+      @five_card_table[row[1].to_i] = [row[0].to_i, row[3], row[4]]
+    end
+
+    @seven_card_table = Hash.new
+    CSV.foreach("lib/rora/7-card-hands.csv") do |row|
+      @seven_card_table[row[1].to_i] = [row[0].to_i, row[4], row[5]]
     end
   end
 
   def find id
-    @table.fetch id
+    @five_card_table.has_key?(id) ? @five_card_table.fetch(id) : @seven_card_table.fetch(id)
   end
 
   # Returns all possible poker hands.
@@ -70,13 +76,12 @@ class HandRepository
       raise RuntimeError if board.contains_any? starting_hand.cards
       if board.cards.size == 5
         (board.cards + starting_hand.cards).combination(5).to_a.each { |cards| hands << Hand.new(cards) }
-        return hands
       else
         deck.remove(starting_hand).remove(board).combination(5 - board.cards.size).to_a.each do |cards|
           (starting_hand.cards + board.cards + cards).combination(5).to_a.each { |cds| hands << Hand.new(cds) }
         end
-        return hands
       end
+      return hands
     end
 
     deck.remove(starting_hand).combination(3).each { |cards| hands << Hand.new(cards + starting_hand.cards) }
@@ -116,7 +121,7 @@ class HandRepository
 
     hash = Hash.new
     results.each do |result|
-      hash[result.hash_key] = result
+      hash[result.key] = result
     end
     hash.values
   end
