@@ -11,6 +11,7 @@ class Rank
   include Comparable
 
   attr_reader :id, :key, :value, :order
+  
   def initialize(id, key, value, order)
     @id = id
     @key = key

@@ -14,6 +14,7 @@ class Deck
         @cards << Card.new(rank, suit)
       end
     end
+    @cards.sort!
   end
 
   # Retains all cards with the given suit or rank, removing all others.
