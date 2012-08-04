@@ -54,14 +54,14 @@ class Board
   def turn= card
     cd = card.kind_of?(Card) ? card : Card.new(card)
     raise RuntimeError, "The flop must be dealt before the turn card is dealt" if @flop.nil?
-    raise ArgumentError, "The board already contains the #{cd.name}" if cards.include? cd
+    raise ArgumentError, "The board already contains the #{cd.value}" if cards.include? cd
     @turn = cd
   end
 
   def river= card
     cd = card.kind_of?(Card) ? card : Card.new(card)
     raise RuntimeError, "The turn card must be dealt before the river card is dealt" if @turn.nil?
-    raise ArgumentError, "The board already contains the #{cd.name}" if cards.include? cd
+    raise ArgumentError, "The board already contains the #{cd.value}" if cards.include? cd
     @river = cd
   end
 

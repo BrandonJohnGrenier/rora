@@ -20,7 +20,7 @@ class HandRankingGenerator
     five_card.each_pair do |key,value|
       if(!seven_card.has_key?(key))
         if(!value[3].include?("Flush"))
-          puts "7 card hand ranking does not include key #{key} { #{value[1]} => #{value[3]} }"
+          puts "7 card hand ranking missing key #{key} { #{value[1]} => #{value[3]} }"
           count = count + 1
         else
           flush_count = flush_count + 1
@@ -58,20 +58,21 @@ class HandRankingGenerator
 
   def generate_flush_rankings
     Suit.values().each do |suit|
-      generate_hand_rankings(suit, 5, 2)
-      puts "- 555555555555555 -----------------------------------"
+      # generate_hand_rankings(suit, 5, 2)
       generate_hand_rankings(suit, 6, 1)
-      generate_hand_rankings(suit, 7, 0)
+      # generate_hand_rankings(suit, 7, 0)
     end
   end
 
   def generate_hand_rankings(suit, i, j)
+    collisions = 0
     Deck.new.retain_all(suit).combination(i).each do |suited|
       Deck.new.remove_all(suit).combination(j).each do |remainder|
         cards = suited + remainder
         key = get_flush_key(cards, i)
         hand = get_best_hand(cards)
         if(@scores.has_key?(key) && hand.score != @scores[key])
+          collisions = collisions + 1
           puts "ERROR ==> #{hand.score},#{key},#{rank_string(hand.cards)},#{rank_string(cards)},#{hand.type.key},#{hand.name}"
           #raise RuntimeError, "Key collision for key #{key}, two different hand scores: #{@scores[key]} vs #{hand.score} #{cards}"
         end
@@ -81,6 +82,7 @@ class HandRankingGenerator
         end
       end
     end
+    puts "found #{collisions} #{suit.value} collisions"
   end
 
   def rank_string(cards)
@@ -88,22 +90,26 @@ class HandRankingGenerator
   end
 
   def get_key(cards)
-    suit_key = cards.inject(0) {|sum, card| sum + card.suit.id }
-    rank_key = cards.inject(1) {|product, card| product * card.rank.id }
-    rank_key + suit_key
+    key = cards.inject(1) {|product, card| product * card.rank.id }
   end
 
   def get_flush_key(cards, count)
     key = cards.inject(1) {|product, card| product * card.rank.id }
-    if(count == 5)
-      return key * 71
-    end
-    if(count == 6)
-      return key * 73
-    end
-    if(count == 7)
-      return key * 79
-    end
+    cid = cards.inject(1) {|summand, card| summand * card.id }
+    "#{key}-#{cid}"    
+    
+#    suit_key = cards.inject(0) {|sum, card| sum + card.suit.id }
+#    rank_key = cards.inject(1) {|product, card| product * card.rank.id }
+#    key = rank_key + suit_key
+    #    if(count == 5)
+    #      return key * 71
+    #    end
+    #    if(count == 6)
+    #      return key * 73
+    #    end
+    #    if(count == 7)
+    #      return key * 79
+    #    end
   end
 
   def get_best_hand(cards)

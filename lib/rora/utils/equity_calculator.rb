@@ -1,4 +1,5 @@
 class EquityCalculator
+  
   def initialize
     @hand_repository = HandRepository.instance
   end
@@ -38,39 +39,40 @@ class EquityCalculator
     equities
   end
 
+  def find_best_5_card_hand(cards)
+    hands = []
+    cards.combination(5).to_a.each { |cards| hands << Hand.new(cards) }
+    hands.sort {|x,y| x.score <=> y.score }[0]
+  end
+
   private
 
   def showdown equity_results, starting_hands, board_cards
     scores = Hash.new
     starting_hands.each do |starting_hand|
-      scores[starting_hand] = get_best_hand(board_cards, starting_hand)
+      scores[starting_hand] = get_best_hand((board_cards + starting_hand.cards))
     end
 
-#    winner = scores.min_by{|key,value| value}
-#    winner_score = winner[1]
-#
-#    number_of_identical_hand_scores = 0
-#    scores.each_value do |score|
-#      if(score == winner_score)
-#        number_of_identical_hand_scores += 1
-#      end
-#    end
-#
-#    if(number_of_identical_hand_scores == 1)
-#      equity_results[winner[0]] += 1
-#    end
+    winner = scores.min_by{|key,value| value}
+    winner_score = winner[1]
+
+    number_of_identical_hand_scores = 0
+    scores.each_value do |score|
+      if(score == winner_score)
+        number_of_identical_hand_scores += 1
+      end
+    end
+
+    if(number_of_identical_hand_scores == 1)
+      equity_results[winner[0]] += 1
+    end
   end
 
-  def get_best_hand(board_cards, starting_hand)
-#    begin
-#      @hand_repository.find((board_cards + starting_hand.cards).inject(1) {|product, card| product * card.rank.id })[0]
-#    rescue KeyError
-#      40
-#    end
-    40
+  def get_best_hand(cards)
+    @hand_repository.evaluate_7_card_hand(cards.inject(1) {|product, card| product * card.rank.id })[0]
   end
 
-  def contains_duplicates? starting_hands, board
+  def contains_duplicates?(starting_hands, board)
     cards = merge_cards(starting_hands, board)
     cards.uniq.length != cards.length
   end

@@ -39,7 +39,15 @@ class RankTest < ActiveSupport::TestCase
   end
 
   test "should generate a readable string representation" do
-    assert_equal "Rank: Ace", Rank::ACE.to_s
+    assert_equal "Ace", Rank::ACE.to_s
+  end
+
+  test "two identical ranks should be equal" do
+    assert_equal true, Rank::ACE == Rank::ACE
+  end
+
+  test "two different ranks should not be equal" do
+    assert_equal false, Rank::EIGHT == Rank::FIVE
   end
 
 end

@@ -15,8 +15,10 @@
 # card = Card.new("kH")
 #
 class Card
-  attr_reader :rank, :suit
+  include Comparable
 
+  attr_reader :rank, :suit
+  
   def initialize(*args)
     if(args.size == 2)
       @rank = args[0]
@@ -29,11 +31,16 @@ class Card
     end
   end
 
+  def <=>(card)
+    return self.rank <=> card.rank if card.rank != self.rank
+    self.suit <=> card.suit
+  end
+
   def key
     @rank.key + @suit.key
   end
 
-  def name
+  def value
     "#{@rank.value} of #{@suit.value}s"
   end
 
@@ -60,7 +67,7 @@ class Card
   end
 
   def to_s
-    "#{name}"
+    "#{value}"
   end
 
 end

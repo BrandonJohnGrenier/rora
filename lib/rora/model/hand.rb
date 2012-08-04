@@ -21,22 +21,12 @@ class Hand
 
   # Returns the hand key.
   def key
-    @cards.inject(1) {|product, card| product * card.rank.id } * (flush? ? 67 : 1)
+    @cards.map { |card| "#{card.key}" }.join
   end
 
-  # Returns the hand value.
-  def value
-    @cards.map { |card| "#{card.key}" }.join(",")
-  end
-
-  # Returns the hand strength, from 1 (strongest) to 7462 (weakest).
+  # Returns the hand score, from 1 (strongest) to 7462 (weakest).
   def score
     resolve_hand_attribute(0)
-  end
-
-  # Returns the probability of this hand being dealt.
-  def probability
-    resolve_hand_attribute(3)
   end
 
   # Returns the hand name.
@@ -107,10 +97,14 @@ class Hand
     @cards.contains cards
   end
 
+  def to_s
+    "#{@cards.inject('') { |string, card| string << card.key }} (#{name})"
+  end
+
   private
 
   def resolve_hand_attribute value
-    @hand_repository.find(key)[value]
+    @hand_repository.evaluate_5_card_hand(cards)[value]
   end
 
 end

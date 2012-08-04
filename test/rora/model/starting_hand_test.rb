@@ -29,7 +29,7 @@ class StartingHandTest < ActiveSupport::TestCase
   end
 
   test "the starting hand should have a value" do
-    assert_equal "AS,KS", StartingHand.new("ASKS").value
+    assert_equal "Ace of Spades, King of Spades", StartingHand.new("ASKS").value
   end
 
   test "the starting hand should have a short value" do
@@ -44,12 +44,12 @@ class StartingHandTest < ActiveSupport::TestCase
     assert_equal false, StartingHand.new("ASKH").pocket_pair?
   end
 
-  test "the starting hand should have a key that is equal to the product of the card rank ids when the starting hand is unsuited" do
-    assert_equal StartingHand.new("ASKH").key, (Card.new("AS").rank.id * Card.new("KH").rank.id)
+  test "the starting hand should have a key that is composed of the card keys" do
+    assert_equal "ASKH", StartingHand.new("ASKH").key
   end
 
-  test "the starting hand should have a key that is equal to 67 times the product of the card rank ids when the starting hand is suited" do
-    assert_equal StartingHand.new("ASKS").key, (Card.new("AS").rank.id * Card.new("KS").rank.id * 67)
+  test "the starting hand key should have a consistent ordering" do
+    assert_equal "ASKH", StartingHand.new("KHAS").key
   end
 
   test "should return all starting hands" do

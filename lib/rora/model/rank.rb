@@ -8,8 +8,9 @@
 # and the strongest value (12) assigned to the ace.
 #
 class Rank
-  attr_reader :id, :key, :value, :order
+  include Comparable
 
+  attr_reader :id, :key, :value, :order
   def initialize(id, key, value, order)
     @id = id
     @key = key
@@ -28,25 +29,41 @@ class Rank
     raise ArgumentError, "No rank exists for key '#{key}'"
   end
 
+  def <=>(rank)
+    self.order <=> rank.order
+  end
+
+  def eql? rank
+    self == rank
+  end
+
+  def == rank
+    self.key == rank.key
+  end
+
+  def hash
+    return self.rank.ord
+  end
+
   def to_s
-    "Rank: #{@value}"
+    "#{@value}"
   end
 
   class << self
     private :new
   end
 
-	TWO = new(2, "2", "Two", 0)
-  THREE = new(3, "3", "Three", 1)
-  FOUR = new(5, "4", "Four", 2)
-  FIVE = new(7, "5", "Five", 3)
-  SIX = new(11, "6", "Six", 4)
-  SEVEN = new(13, "7", "Seven", 5)
-  EIGHT = new(17, "8", "Eight", 6)
-  NINE = new(19, "9", "Nine", 7)
-  TEN = new(23, "T", "Ten", 8)
-  JACK = new(29, "J", "Jack", 9)
-  QUEEN = new(31, "Q", "Queen", 10)
-  KING = new(37, "K", "King", 11)
-  ACE = new(41, "A", "Ace", 12)
+  TWO = new(2, "2", "Two", 13)
+  THREE = new(3, "3", "Three", 12)
+  FOUR = new(5, "4", "Four", 11)
+  FIVE = new(7, "5", "Five", 10)
+  SIX = new(11, "6", "Six", 9)
+  SEVEN = new(13, "7", "Seven", 8)
+  EIGHT = new(17, "8", "Eight", 7)
+  NINE = new(19, "9", "Nine", 6)
+  TEN = new(23, "T", "Ten", 5)
+  JACK = new(29, "J", "Jack", 4)
+  QUEEN = new(31, "Q", "Queen", 3)
+  KING = new(37, "K", "King", 2)
+  ACE = new(41, "A", "Ace", 1)
 end

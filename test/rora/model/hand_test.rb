@@ -24,20 +24,8 @@ class HandTest < ActiveSupport::TestCase
     end
   end
 
-  test "the hand should have a hash key" do
-    assert_equal 2101589603, @hand.key
-  end
-
-  test "the hand key should be equal to the product of each card rank id in the hand times" do
-    assert_equal Hand.new("ASACAHJSTS").key, (Card.new("AS").rank.id * Card.new("AC").rank.id * Card.new("AH").rank.id * Card.new("JS").rank.id * Card.new("TS").rank.id)
-  end
-
-  test "the hand key should be equal to the product of each card rank id in the hand times 67 when the hand is a flush" do
-    assert_equal @hand.key, (Card.new("AS").rank.id * Card.new("KS").rank.id * Card.new("QS").rank.id * Card.new("JS").rank.id * Card.new("TS").rank.id * 67)
-  end
-
-  test "the hand should have a value" do
-    assert_equal "AS,KS,QS,JS,TS", @hand.value
+  test "the hand should have a hand key" do
+    assert_equal "ASKSQSJSTS", @hand.key
   end
 
   test "the hand should be a flush" do

@@ -1,9 +1,43 @@
 require File.expand_path("../../rora_test", File.dirname(__FILE__))
 
 class CardTest < ActiveSupport::TestCase
-  
   def setup
     @card = Card.new("AS")
+  end
+
+  test "should be able to sort cards by rank" do
+    cards = Card.to_cards "2H,4D,QS,JC,7D,TC,AH,KD,6H,9D,3S,5C,8C"
+    cards.sort!
+
+    assert_equal "Ace of Hearts", cards[0].value
+    assert_equal "King of Diamonds", cards[1].value
+    assert_equal "Queen of Spades", cards[2].value
+    assert_equal "Jack of Clubs", cards[3].value
+    assert_equal "Ten of Clubs", cards[4].value
+    assert_equal "Nine of Diamonds", cards[5].value
+    assert_equal "Eight of Clubs", cards[6].value
+    assert_equal "Seven of Diamonds", cards[7].value
+    assert_equal "Six of Hearts", cards[8].value
+    assert_equal "Five of Clubs", cards[9].value
+    assert_equal "Four of Diamonds", cards[10].value
+    assert_equal "Three of Spades", cards[11].value
+    assert_equal "Two of Hearts", cards[12].value
+  end
+
+  test "should be able to sort cards by suit" do
+    cards = Card.to_cards "AS,AH,AD,AC"
+    cards.sort!
+
+    assert_equal "Ace of Hearts", cards[0].value
+    assert_equal "Ace of Diamonds", cards[1].value
+    assert_equal "Ace of Spades", cards[2].value
+    assert_equal "Ace of Clubs", cards[3].value
+
+  end
+
+  test "should be able to identify duplicate cards" do
+    cards = Card.to_cards("AS,AS,KS,KS")
+    assert_equal 2, cards.uniq.size
   end
 
   test "should be able to create a card with the specified rank and suit" do
@@ -35,8 +69,8 @@ class CardTest < ActiveSupport::TestCase
     assert_equal "AS", (Rank::ACE.key + Suit::SPADE.key)
   end
 
-  test "a card should have a name" do
-    assert_equal "Ace of Spades", Card.new("AS").name
+  test "a card should have a value" do
+    assert_equal "Ace of Spades", Card.new("AS").value
   end
 
   test "should generate a readable string representation" do

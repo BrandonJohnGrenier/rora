@@ -8,7 +8,8 @@ class StartingHandRepository
     Deck.new.cards.combination(2) do |combination|
       starting_hand = StartingHand.new(combination)
       @all << starting_hand
-      @distinct[starting_hand.key] = starting_hand
+      hash_key = starting_hand.cards.inject(1) {|product, card| product * card.rank.id } * (starting_hand.suited? ? 67 : 1)
+      @distinct[hash_key] = starting_hand
     end
   end
 
