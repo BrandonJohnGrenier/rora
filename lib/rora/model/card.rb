@@ -15,6 +15,7 @@
 # card = Card.new("kH")
 #
 class Card
+  
   attr_reader :rank, :suit
 
   def initialize(*args)
