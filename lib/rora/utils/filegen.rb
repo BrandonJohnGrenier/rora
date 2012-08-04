@@ -1,5 +1,5 @@
 class Filegen
-  
+
   def initialize
     @scores = {}
   end
@@ -15,16 +15,15 @@ class Filegen
                   cards = card_1 + card_2 + card_3 + card_4 + card_5 + card_6 + card_7
                   key = get_key(cards)
                   hand = get_best_hand(cards)
-                  if(!hand.flush?)
-                    raise RuntimeError, "Collision detected for key #{key}, two different hand scores: #{@scores[key]} vs #{hand.score}" if(@scores.has_key?(key) && hand.score != @scores[key])
-                    if(!@scores.has_key?(key))
-                      @scores[key] = hand.score
-                      puts "#{key},#{hand.score}"
-                      if(@scores.size >= 6150)
-                        puts "Generated all 6150 7-card (non-flush) hands"
-                        return
-                      end
-                    end
+                  next if hand.flush?
+                  raise RuntimeError, "Collision detected for key #{key}, two different hand scores: #{@scores[key]} vs #{hand.score}" if(@scores.has_key?(key) && hand.score != @scores[key])
+                  if(!@scores.has_key?(key))
+                    @scores[key] = hand.score
+                    puts "#{key},#{rank_string(cards)},#{hand.score},#{rank_string(hand.cards)},#{hand.type.key},#{hand.name}"
+#                    if(@scores.size >= 6150)
+#                      puts "Generated all 6150 7-card (non-flush) hands"
+#                      return
+#                    end
                   end
                 end
               end
@@ -33,6 +32,14 @@ class Filegen
         end
       end
     end
+  end
+
+  def rank_string(cards)
+    string = ''
+    cards.each do |card|
+      string << card.rank.key
+    end
+    string
   end
 
   def generate_flush_rankings
