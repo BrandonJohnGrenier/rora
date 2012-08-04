@@ -3,17 +3,13 @@
 # one player and remain hidden from the other players.
 #
 class StartingHand
-  attr_reader :id, :key, :cards
+  attr_reader :cards, :key
+  
   def initialize cards
-    @cards = Array.new, @id = 1, @key = 1
-
-    @cards = cards.kind_of?(Array) ? cards : Card.to_cards(cards)
+    @cards = (cards.kind_of?(Array) ? cards : Card.to_cards(cards)).sort
     raise ArgumentError, "Exactly 2 cards are required to create a starting hand, #{@cards.size} provided" if @cards.size != 2
     raise ArgumentError, "The starting hand contains duplicate cards" if @cards.uniq.length != @cards.length
-
-    @cards.each {|card| @id *= card.id}
-    @cards.each {|card| @key *= card.rank.id}
-    @key = suited? ? @key * 67 : @key
+    @key = @cards.inject('') { |string, card| string << card.key }
   end
 
   # Returns all cards contained in the starting hand.
@@ -21,11 +17,10 @@ class StartingHand
     @cards.dup
   end
 
-  # Returns the starting hand value.
   def value
-    @cards.map { |card| "#{card.key}" }.join(",")
+    @cards.map { |card| "#{card.value}" }.join(", ")
   end
-
+  
   # Returns the shorthand notation for the starting hand.
   #
   # It is often desirable to have a short hand notation for starting hands,
@@ -51,10 +46,7 @@ class StartingHand
 
   # Determines if the starting hand is suited.
   def suited?
-    for i in 0..@cards.size - 2 do
-      return false if @cards[i].suit != @cards[i+1].suit
-    end
-    true
+    @cards[0].suit == @cards[1].suit
   end
 
   # Returns all possible starting hands.
@@ -103,15 +95,15 @@ class StartingHand
   end
 
   def == starting_hand
-    self.id == starting_hand.id
+    self.key == starting_hand.key
   end
 
   def hash
-    return self.id
+    return self.key.ord
   end
 
   def to_s
-    @cards[0].to_s + ", " + @cards[1].to_s
+    "#{value}"
   end
 
 end

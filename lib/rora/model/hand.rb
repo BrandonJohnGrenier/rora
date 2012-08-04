@@ -11,7 +11,7 @@
 #
 class Hand
   attr_reader :cards
-
+  
   def initialize cards
     @hand_repository = HandRepository.instance
     @cards = cards.kind_of?(Array) ? cards : Card.to_cards(cards)
@@ -19,33 +19,14 @@ class Hand
     raise ArgumentError, "The hand contains duplicate cards" if @cards.uniq.length != @cards.length
   end
 
-  # Returns the hand id.
-  def id
-    i = 1
-    @cards.each { |card| i = i * card.id }
-    i
+  # Returns the hand key.
+  def key
+    @cards.map { |card| "#{card.key}" }.join
   end
 
-  # Returns the hand hash key.
-  def hash_key
-    j = 1
-    @cards.each { |card| j = j * card.rank.id  }
-    flush? ? (j * 67) : j
-  end
-
-  # Returns the hand value.
-  def value
-    @cards.map { |card| "#{card.key}" }.join(",")
-  end
-
-  # Returns the hand strength, from 1 (strongest) to 7462 (weakest).
+  # Returns the hand score, from 1 (strongest) to 7462 (weakest).
   def score
     resolve_hand_attribute(0)
-  end
-
-  # Returns the probability of this hand being dealt.
-  def probability
-    resolve_hand_attribute(3)
   end
 
   # Returns the hand name.
@@ -116,10 +97,14 @@ class Hand
     @cards.contains cards
   end
 
+  def to_s
+    "#{@cards.inject('') { |string, card| string << card.key }} (#{name})"
+  end
+
   private
 
   def resolve_hand_attribute value
-    @hand_repository.find(hash_key)[value]
+    @hand_repository.evaluate_5_card_hand(cards)[value]
   end
 
 end

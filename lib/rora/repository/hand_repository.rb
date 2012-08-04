@@ -3,17 +3,27 @@ require 'singleton'
 
 class HandRepository
   include Singleton
-
+  
   def initialize
     @hands = Array.new
-    @table = Hash.new
+
+    @five_card_table = Hash.new
     CSV.foreach("lib/rora/5-card-hands.csv") do |row|
-      @table[row[1].to_i] = [row[0].to_i, row[3], row[4], row[5].to_f]
+      @five_card_table[row[1].to_i] = [row[0].to_i, row[3], row[4]]
+    end
+
+    @seven_card_table = Hash.new
+    CSV.foreach("lib/rora/7-card-hands.csv") do |row|
+      @seven_card_table[row[1].to_i] = [row[0].to_i, row[4], row[5]]
     end
   end
 
-  def find id
-    @table.fetch id
+  def evaluate_5_card_hand(cards)
+    @five_card_table.fetch(cards.inject(1) {|product, card| product * card.rank.id } * (flush?(cards) ? 67 : 1))
+  end
+
+  def evaluate_7_card_hand(cards)
+    @seven_card_table.fetch(cards.inject(1) {|product, card| product * card.rank.id })
   end
 
   # Returns all possible poker hands.
@@ -59,28 +69,27 @@ class HandRepository
   # This method will return all poker hands that can be made with the given starting
   # hand and cards that remain in the deck.
   def list arguments=nil
-    return hands if arguments.nil? || arguments[:starting_hand].nil?
+    return all_hands if arguments.nil? || arguments[:starting_hand].nil?
 
     starting_hand = arguments[:starting_hand]
     deck = arguments[:deck].nil? ? Deck.new : arguments[:deck]
     board = arguments[:board]
-    hands = Array.new
+    spec_hands = Array.new
 
     if !board.nil?
       raise RuntimeError if board.contains_any? starting_hand.cards
       if board.cards.size == 5
-        (board.cards + starting_hand.cards).combination(5).to_a.each { |cards| hands << Hand.new(cards) }
-        return hands
+        (board.cards + starting_hand.cards).combination(5).to_a.each { |cards| spec_hands << Hand.new(cards) }
       else
         deck.remove(starting_hand).remove(board).combination(5 - board.cards.size).to_a.each do |cards|
-          (starting_hand.cards + board.cards + cards).combination(5).to_a.each { |cds| hands << Hand.new(cds) }
+          (starting_hand.cards + board.cards + cards).combination(5).to_a.each { |cds| spec_hands << Hand.new(cds) }
         end
-        return hands
       end
+      return spec_hands
     end
 
-    deck.remove(starting_hand).combination(3).each { |cards| hands << Hand.new(cards + starting_hand.cards) }
-    hands
+    deck.remove(starting_hand).combination(3).each { |cards| spec_hands << Hand.new(cards + starting_hand.cards) }
+    spec_hands
   end
 
   # Returns unique poker hands.
@@ -110,20 +119,27 @@ class HandRepository
   #
   # This method carries the same semantics as the list method, but returns unique hands instead of
   # every possible hand.
-  def list_unique arguments=nil
-    results = list arguments
-    return results if results.nil? || results.size == 0
+  def list_and_group_by_hand_score arguments=nil
+    spec_hands = list arguments
+    return spec_hands if spec_hands.nil? || spec_hands.size == 0
 
     hash = Hash.new
-    results.each do |result|
-      hash[result.hash_key] = result
+    spec_hands.each do |hand|
+      hash[(hand.cards.inject(1) {|product, card| product * card.rank.id } * (flush?(hand.cards) ? 67 : 1))] = hand
     end
     hash.values
   end
 
   private
 
-  def hands
+  def flush?(cards)
+    for i in 0..(cards.size - 2) do
+      return false if cards[i].suit != cards[i+1].suit
+    end
+    true
+  end
+
+  def all_hands
     if @hands.empty?
       Deck.new.combination(5).each {|cards| @hands << Hand.new(cards)}
     end

@@ -1,18 +1,22 @@
 class EquityCalculator
   
-  def self.calculate_equity(starting_hands, board = Board.new)
+  def initialize
+    @hand_repository = HandRepository.instance
+  end
+
+  def calculate_equity(starting_hands, board = Board.new)
     raise ArgumentError, "Must have at least two starting hands for equity comparison" if (starting_hands.nil? || starting_hands.size < 2)
-    raise ArgumentError, "There are duplicate cards" if EquityCalculator.contains_duplicates? starting_hands, board
+    raise ArgumentError, "There are duplicate cards" if contains_duplicates? starting_hands, board
 
     results = Hash[starting_hands.map{ |starting_hand| [starting_hand, 0] }]
 
-    deck = Deck.new.remove(EquityCalculator.merge_cards(starting_hands, board))
+    deck = Deck.new.remove(merge_cards(starting_hands, board))
     i = 0
     start = Time.now
     deck.combination(5 - board.cards.size).each do | cards |
-      EquityCalculator.showdown(results, starting_hands, board.cards + cards)
+      showdown(results, starting_hands, board.cards + cards)
       i = i + 1
-      if i % 5000 == 0
+      if i % 50000 == 0
         current = Time.now
         delta = ((current - start) * 1000.0).to_i
         puts "round #{i}, time #{delta}"
@@ -35,14 +39,18 @@ class EquityCalculator
     equities
   end
 
+  def find_best_5_card_hand(cards)
+    hands = []
+    cards.combination(5).to_a.each { |cards| hands << Hand.new(cards) }
+    hands.sort {|x,y| x.score <=> y.score }[0]
+  end
+
   private
 
-  def self.showdown equity_results, starting_hands, board_cards
+  def showdown equity_results, starting_hands, board_cards
     scores = Hash.new
-
     starting_hands.each do |starting_hand|
-      best_hand = get_best_hand(board_cards, starting_hand)
-      scores[starting_hand] = best_hand.score
+      scores[starting_hand] = get_best_hand((board_cards + starting_hand.cards))
     end
 
     winner = scores.min_by{|key,value| value}
@@ -60,18 +68,16 @@ class EquityCalculator
     end
   end
 
-  def self.get_best_hand(board_cards, starting_hand)
-    hands = []
-    (board_cards + starting_hand.cards).combination(5).to_a.each { |cards| hands << Hand.new(cards) }
-    hands.sort {|x,y| x.score <=> y.score }[0]
+  def get_best_hand(cards)
+    @hand_repository.evaluate_7_card_hand(cards.inject(1) {|product, card| product * card.rank.id })[0]
   end
 
-  def self.contains_duplicates? starting_hands, board
-    cards = EquityCalculator.merge_cards(starting_hands, board)
+  def contains_duplicates?(starting_hands, board)
+    cards = merge_cards(starting_hands, board)
     cards.uniq.length != cards.length
   end
 
-  def self.merge_cards(starting_hands, board)
+  def merge_cards(starting_hands, board)
     cards = board.cards
     starting_hands.each { |starting_hand | cards.concat(starting_hand.cards) }
     cards
