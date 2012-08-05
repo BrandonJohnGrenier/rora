@@ -18,7 +18,7 @@ class EquityCalculatorTest < ActiveSupport::TestCase
 
   test "should find the best 5-card hand from 7 cards" do
     best_hand = @calculator.find_best_5_card_hand Card.to_cards("AS,AH,AC,AD,2S,2C,2H")
-    assert_equal "ASAHACAD2S", best_hand.key
+    assert_equal "AHADASAC2S", best_hand.key
   end
 
   test "should raise an error when there are no starting hands to compare" do

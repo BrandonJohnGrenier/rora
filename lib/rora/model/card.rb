@@ -18,7 +18,7 @@ class Card
   include Comparable
 
   attr_reader :rank, :suit
-  
+
   def initialize(*args)
     if(args.size == 2)
       @rank = args[0]
@@ -29,11 +29,20 @@ class Card
       @rank = Rank.get(args[0][0])
       @suit = Suit.get(args[0][1])
     end
+
+    @card_table = Hash.new
+    CSV.foreach("lib/rora/cards.csv") do |row|
+      @card_table[row[0]] = row[1].to_i
+    end
   end
 
   def <=>(card)
     return self.rank <=> card.rank if card.rank != self.rank
     self.suit <=> card.suit
+  end
+
+  def id
+    @card_table[key]
   end
 
   def key
