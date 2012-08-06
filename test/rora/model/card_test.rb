@@ -52,6 +52,10 @@ class CardTest < ActiveSupport::TestCase
     assert_equal card.suit, Suit::SPADE
   end
 
+  test "should have an id" do
+    assert_equal 103, @card.id
+  end
+
   test "should raise an exception when attempting to create a card with an invalid string value" do
     assert_raise_message "A is an invalid card sequence", ArgumentError do
       card = Card.new("A")

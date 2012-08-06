@@ -18,7 +18,6 @@ class Card
   include Comparable
 
   attr_reader :rank, :suit
-
   def initialize(*args)
     if(args.size == 2)
       @rank = args[0]
@@ -30,10 +29,7 @@ class Card
       @suit = Suit.get(args[0][1])
     end
 
-    @card_table = Hash.new
-    CSV.foreach("lib/rora/cards.csv") do |row|
-      @card_table[row[0]] = row[1].to_i
-    end
+    @card_repository = CardRepository.instance
   end
 
   def <=>(card)
@@ -42,7 +38,7 @@ class Card
   end
 
   def id
-    @card_table[key]
+    @card_repository.get(key)
   end
 
   def key
