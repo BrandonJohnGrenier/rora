@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/BrandonJohnGrenier/Rora.png?branch=master)](http://travis-ci.org/BrandonJohnGrenier/Rora)
+[![Build Status](https://secure.travis-ci.org/BrandonJohnGrenier/rora.png?branch=master)](http://travis-ci.org/BrandonJohnGrenier/rora)
 
 
 # About Rora
@@ -23,7 +23,7 @@ A complete deck of 52 cards will contain exactly four different suits - spades, 
     
     
 ### Ranks  
-A complete deck of 52 cards will contain exactly thirteen ranks - numerical values 2 -> 10 inclusive, plus four non-numerical cards (Jack, Queen, King, Ace). Instances along with equivalent character values are shown below:
+A complete deck of 52 cards will contain exactly thirteen ranks - the numerical values 2 through 10 (inclusive), plus four non-numerical cards (Jack, Queen, King, Ace). Instances along with equivalent character values are shown below:
   
     Rank::ACE      // 'A'
     Rank::KING     // 'K'
@@ -99,7 +99,6 @@ Each hand in poker has a rank, or score. While many software libraries provide t
     
     puts seven_high.score => 7642
     puts seven_high.name => 'High Card'
-    puts seven_high.probability => 0.50    // Probability of receiving any High Card
     
 ### Hand Type Detection    
     
@@ -204,6 +203,18 @@ The remove method takes a variety of arguments.
     # Removes a starting hand from the deck
     starting_hand = StartingHand.new "AS, KS"
     deck.remove starting_hand
+    
+    # Removes all spades from the deck
+    deck.remove_all Suit::SPADE
+    
+    # Removes all cards aside from spades
+    deck.retain_all Suit::SPADE
+    
+    # Removes all kings from the deck
+    deck.remove_all Rank::KING
+    
+    # Removes all cards aside from kings
+    deck.retain_all Rank::KING
     
 ### Inspecting the Deck
 You can query the deck to determine whether it contains a specific card or at least one card in a group.  

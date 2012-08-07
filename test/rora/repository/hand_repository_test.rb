@@ -13,12 +13,12 @@ class HandRepositoyTest < ActiveSupport::TestCase
     assert_equal "Royal Flush", result[2]
   end
 
-#  test "should be able to evaluate a 7 card poker hand" do
-#    result =  @repository.evaluate_7_card_hand Card.to_cards("AS,KS,QS,JS,TS,7H,7D")
-#    assert_equal 11, result[0]
-#    assert_equal "4K", result[1]
-#    assert_equal "Four Aces", result[2]
-#  end
+  test "should be able to evaluate a 7 card poker hand" do
+    result =  @repository.evaluate_7_card_hand Card.to_cards("KS,3H,2S,AS,AC,AH,AD")
+    assert_equal 11, result[0]
+    assert_equal "4K", result[1]
+    assert_equal "Four Aces", result[2]
+  end
 
   test "should return all 2,598,960 poker hands" do
     assert_equal 2598960, @repository.list.size

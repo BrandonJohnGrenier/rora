@@ -1,6 +1,7 @@
 require 'date'
 
 class HandRankingGenerator
+  
   def initialize
     @total = 133784560
     @count = 0
