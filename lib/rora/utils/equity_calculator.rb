@@ -8,19 +8,11 @@ class EquityCalculator
     raise ArgumentError, "Must have at least two starting hands for equity comparison" if (starting_hands.nil? || starting_hands.size < 2)
     raise ArgumentError, "There are duplicate cards" if contains_duplicates? starting_hands, board
 
-    results = Hash[starting_hands.map{ |starting_hand| [starting_hand, 0] }]
+    results = Hash[starting_hands.map{|starting_hand| [starting_hand, 0]}]
 
     deck = Deck.new.remove(merge_cards(starting_hands, board))
-    i = 0
-    start = Time.now
-    deck.combination(5 - board.cards.size).each do | cards |
+    deck.combination(5 - board.cards.size).each do |cards|
       showdown(results, starting_hands, board.cards + cards)
-      i = i + 1
-      if i % 50000 == 0
-        current = Time.now
-        delta = ((current - start) * 1000.0).to_i
-        puts "round #{i}, time #{delta}"
-      end
     end
 
     total = deck.combination(5 - board.cards.size).size
@@ -39,37 +31,13 @@ class EquityCalculator
     equities
   end
 
-  def find_best_5_card_hand(cards)
-    hands = []
-    cards.combination(5).to_a.each { |cards| hands << Hand.new(cards) }
-    hands.sort {|x,y| x.score <=> y.score }[0]
-  end
-
   private
 
-  def showdown equity_results, starting_hands, board_cards
-    scores = Hash.new
-    starting_hands.each do |starting_hand|
-      scores[starting_hand] = get_best_hand((board_cards + starting_hand.cards))
-    end
-
-    winner = scores.min_by{|key,value| value}
-    winner_score = winner[1]
-
-    number_of_identical_hand_scores = 0
-    scores.each_value do |score|
-      if(score == winner_score)
-        number_of_identical_hand_scores += 1
-      end
-    end
-
-    if(number_of_identical_hand_scores == 1)
-      equity_results[winner[0]] += 1
-    end
-  end
-
-  def get_best_hand(cards)
-    @hand_repository.evaluate_7_card_hand(cards.inject(1) {|product, card| product * card.rank.id })[0]
+  def showdown(results, starting_hands, board_cards)
+    best_hands = starting_hands.inject(Hash.new(0)) { |hash, starting_hand| hash[starting_hand] = @hand_repository.evaluate_7_card_hand((board_cards + starting_hand.cards))[0]; hash}
+    best_hand = best_hands.min_by{|key,value| value}
+    best_score = best_hand[1]
+    results[best_hand[0]] += 1 if(best_hands.select {|k,v| v == best_score}.size == 1)
   end
 
   def contains_duplicates?(starting_hands, board)
