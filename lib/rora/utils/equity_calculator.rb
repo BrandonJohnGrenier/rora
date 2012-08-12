@@ -1,3 +1,5 @@
+require 'date'
+
 class EquityCalculator
 
   def initialize
@@ -10,8 +12,18 @@ class EquityCalculator
 
     results = Hash[starting_hands.map{|starting_hand| [starting_hand, 0]}]
     collection = Deck.new.remove(merge(starting_hands, board)).combination(5 - board.cards.size)
-    collection.each { |cards| showdown(results, starting_hands, board.cards + cards) }
-    results.inject(Hash.new) { |hash, result| hash[result[0]] = Equity.new(collection.size, result); hash}
+
+    i = 0
+    collection.each do |cards|
+      showdown(results, starting_hands, board.cards + cards)
+      i = i + 1
+      if(i % 25000 == 0)
+        puts "#{DateTime.now.strftime('%Y-%m-%d %H:%M:%S')} #{i}"
+      end
+    end
+
+    total_winning_hands = results.inject(0) {|total, result| total += result[1]}
+    results.inject(Hash.new) { |hash, result| hash[result[0]] = Equity.new(collection.size, total_winning_hands, result); hash}
   end
 
   private

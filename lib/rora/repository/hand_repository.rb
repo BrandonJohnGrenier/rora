@@ -8,7 +8,7 @@ class HandRepository
   DIAMOND_FLUSH=243
   SPADE_FLUSH=3125
   CLUB_FLUSH=16807
-  
+
   def initialize
     @hands = Array.new
 
@@ -29,13 +29,23 @@ class HandRepository
   end
 
   def evaluate_7_card_hand(cards)
-    key = cards.inject(1) {|product, card| product * (contains_flush?(cards) ? card.id : card.rank.id)}
+    flush = contains_flush?(cards)
+    return get_best_hand(cards) if flush
+    
+    key = 1
+    cards.each {|card| key = key * card.rank.id}
     @seven_card_table.fetch(key)
   end
 
   def contains_flush?(cards)
-    key = cards.inject(1) {|product, card| product * card.suit.id }
+    key = 1
+    cards.each {|card| key = key * card.suit.id}
     key % HEART_FLUSH == 0 || key % DIAMOND_FLUSH == 0 || key % SPADE_FLUSH == 0 || key % CLUB_FLUSH == 0
+  end
+
+  def get_best_hand(cards)
+    hands = cards.combination(5).to_a.each.collect { |selection| Hand.new(selection) }
+    hands.sort {|x,y| x.score <=> y.score }[0].score
   end
 
   # Returns all possible poker hands.

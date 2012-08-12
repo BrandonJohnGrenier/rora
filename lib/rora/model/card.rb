@@ -18,6 +18,7 @@ class Card
   include Comparable
 
   attr_reader :rank, :suit
+  
   def initialize(*args)
     if(args.size == 2)
       @rank = args[0]
