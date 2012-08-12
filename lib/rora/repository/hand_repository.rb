@@ -45,7 +45,7 @@ class HandRepository
 
   def get_best_hand(cards)
     hands = cards.combination(5).to_a.each.collect { |selection| Hand.new(selection) }
-    hands.sort {|x,y| x.score <=> y.score }[0].score
+    [hands.sort {|x,y| x.score <=> y.score}[0].score]
   end
 
   # Returns all possible poker hands.

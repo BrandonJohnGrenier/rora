@@ -1,7 +1,6 @@
 require 'date'
 
 class EquityCalculator
-
   def initialize
     @hand_repository = HandRepository.instance
   end
@@ -30,9 +29,9 @@ class EquityCalculator
 
   def showdown(results, starting_hands, board_cards)
     best_hands = starting_hands.inject(Hash.new) { |hash, starting_hand| hash[starting_hand] = @hand_repository.evaluate_7_card_hand((board_cards + starting_hand.cards))[0]; hash}
-    top_hand = best_hands.min_by{|key,value| value}
-    top_score = top_hand[1]
-    results[top_hand[0]] += 1 if(best_hands.select {|k,v| v == top_score}.size == 1)
+    winner = best_hands.min_by{|key,value| value}
+    top_score = winner[1]
+    results[winner[0]] += 1 if(best_hands.select {|k,v| v == top_score}.size == 1)
   end
 
   def contains_duplicates?(starting_hands, board)
