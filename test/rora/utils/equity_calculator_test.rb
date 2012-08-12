@@ -3,23 +3,17 @@ require File.expand_path("../../rora_test", File.dirname(__FILE__))
 class EquityCalculatorTest < ActiveSupport::TestCase
   
   def setup
-    @board = Board.new
+    @board = Board.new("4C4H4D")
     @calculator = EquityCalculator.new
   end
 
 #  test "should return equity calculations for a heads up game" do
-#    starting_hands = [StartingHand.new("2H2S"), StartingHand.new("3H3S")]
-#
+#    starting_hands = [StartingHand.new("6H7S"), StartingHand.new("4S5S"), StartingHand.new("8CAS")]
 #    equities = @calculator.calculate_equity(starting_hands, @board)
 #
 #    assert_equity_value "6.77", "2H2S", equities
 #    assert_equity_value "86.77", "3H3S", equities
 #  end
-
-  test "should find the best 5-card hand from 7 cards" do
-    best_hand = @calculator.find_best_5_card_hand Card.to_cards("AS,AH,AC,AD,2S,2C,2H")
-    assert_equal "AHADASAC2S", best_hand.key
-  end
 
   test "should raise an error when there are no starting hands to compare" do
     starting_hands = []
@@ -49,7 +43,7 @@ class EquityCalculatorTest < ActiveSupport::TestCase
     end
   end
 
-  def assert_equity_value value, starting_hand, equities
+  def assert_equity_value(value, starting_hand, equities)
     assert_equal value, sprintf("%.02f", equities[StartingHand.new(starting_hand)].value)
   end
 
