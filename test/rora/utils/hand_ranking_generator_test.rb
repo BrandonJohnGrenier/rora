@@ -7,7 +7,7 @@ class HandRankingGeneratorTest < ActiveSupport::TestCase
   end
 
   test "should return equity calculations for a heads up game" do
-    # @generator.generate_non_flush_rankings
+    #@generator.generate_7_card_hand_rankings
   end
 
 end

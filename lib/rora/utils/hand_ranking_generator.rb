@@ -22,13 +22,13 @@ class HandRankingGenerator
                   cards = [cds[index_1], cds[index_2], cds[index_3], cds[index_4], cds[index_5], cds[index_6], cds[index_7]].sort
                   hand = get_best_hand(cards)
                   key = get_key(cards, hand)
-                  if(!@scores.has_key?(key))
+                  if(!@scores.has_key?(key) && !hand.flush?)
                     @scores[key] = hand.score
                     file.write("#{hand.score},#{key},#{rank_string(hand.cards)},#{rank_string(cards)},#{hand.type.key},#{hand.name}\n")
                   end
                   @count = @count + 1
-                  if(@count % 50000 == 0)
-                    puts "#{DateTime.now.strftime('%Y-%m-%d %H:%M:%S')} :: #{@count} rounds done, #{sprintf("%05.3f", (Float(@count)/Float(@total)) * 100.0)}% complete"
+                  if(@count % 100000 == 0)
+                    puts "#{DateTime.now.strftime('%Y-%m-%d %H:%M:%S')} :: #{@count} records processed #{sprintf("%05.3f", (Float(@count)/Float(@total)) * 100.0)}% complete, #{@scores.size} records captured"
                   end
                 end
               end

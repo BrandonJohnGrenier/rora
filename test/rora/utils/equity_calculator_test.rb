@@ -13,6 +13,7 @@ class EquityCalculatorTest < ActiveSupport::TestCase
 #
 #    assert_equity_value "6.77", "2H2S", equities
 #    assert_equity_value "86.77", "3H3S", equities
+#    
 #  end
 
   test "should raise an error when there are no starting hands to compare" do
