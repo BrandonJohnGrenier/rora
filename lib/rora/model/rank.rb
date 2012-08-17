@@ -25,7 +25,7 @@ class Rank
 
   def self.get(key)
     self.values.each do |rank|
-      return rank if rank.key.casecmp(key) == 0
+      return rank if(rank.key.casecmp(key) == 0)
     end
     raise ArgumentError, "No rank exists for key '#{key}'"
   end

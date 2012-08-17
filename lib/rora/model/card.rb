@@ -17,7 +17,7 @@
 class Card
   include Comparable
 
-  attr_reader :rank, :suit
+  attr_reader :rank, :suit, :key, :uid
   
   def initialize(*args)
     if(args.size == 2)
@@ -26,24 +26,17 @@ class Card
     end
     if(args.size == 1)
       raise ArgumentError, "#{args[0]} is an invalid card sequence" if args[0].length != 2
-      @rank = Rank.get(args[0][0])
-      @suit = Suit.get(args[0][1])
+      @rank = Rank.get(args[0][0].chr)
+      @suit = Suit.get(args[0][1].chr)
     end
-
+    @key =  @rank.key + @suit.key
     @card_repository = CardRepository.instance
+    @uid = @card_repository.get(@key)
   end
 
   def <=>(card)
     return self.rank <=> card.rank if card.rank != self.rank
     self.suit <=> card.suit
-  end
-
-  def id
-    @card_repository.get(key)
-  end
-
-  def key
-    @rank.key + @suit.key
   end
 
   def value
@@ -55,11 +48,12 @@ class Card
   end
 
   def == card
-    self.key == card.key
+    return false if !card.kind_of? Card
+    uid == card.uid
   end
 
   def hash
-    return self.key.ord
+     uid
   end
 
   def self.to_cards string

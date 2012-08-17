@@ -53,7 +53,7 @@ class CardTest < ActiveSupport::TestCase
   end
 
   test "should have an id" do
-    assert_equal 103, @card.id
+    assert_equal 103, @card.uid
   end
 
   test "should raise an exception when attempting to create a card with an invalid string value" do

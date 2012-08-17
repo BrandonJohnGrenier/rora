@@ -24,17 +24,13 @@ class HandRepository
   end
 
   def evaluate_5_card_hand(cards)
-    key = cards.inject(1) {|product, card| product * card.rank.id } * (flush?(cards) ? 67 : 1)
-    @five_card_table.fetch(key)
+    flush = contains_flush?(cards)
+    @five_card_table.fetch(cards.inject(1) {|product, card| product * card.rank.id } * (flush ? 67 : 1))
   end
 
   def evaluate_7_card_hand(cards)
     flush = contains_flush?(cards)
-    return get_best_hand(cards) if flush
-    
-    key = 1
-    cards.each {|card| key = key * card.rank.id}
-    @seven_card_table.fetch(key)
+    flush ? get_best_hand(cards) : @seven_card_table.fetch(cards[0].rank.id * cards[1].rank.id * cards[2].rank.id * cards[3].rank.id * cards[4].rank.id * cards[5].rank.id * cards[6].rank.id)
   end
 
   def contains_flush?(cards)
@@ -90,7 +86,7 @@ class HandRepository
   # Starting Hand, Board and Deck
   # This method will return all poker hands that can be made with the given starting
   # hand and cards that remain in the deck.
-  def list arguments=nil
+  def list(arguments=nil)
     return all_hands if arguments.nil? || arguments[:starting_hand].nil?
 
     starting_hand = arguments[:starting_hand]
@@ -141,25 +137,18 @@ class HandRepository
   #
   # This method carries the same semantics as the list method, but returns unique hands instead of
   # every possible hand.
-  def list_and_group_by_hand_score arguments=nil
-    spec_hands = list arguments
+  def list_and_group_by_hand_score(arguments=nil)
+    spec_hands = list(arguments)
     return spec_hands if spec_hands.nil? || spec_hands.size == 0
 
     hash = Hash.new
     spec_hands.each do |hand|
-      hash[(hand.cards.inject(1) {|product, card| product * card.rank.id } * (flush?(hand.cards) ? 67 : 1))] = hand
+      hash[(hand.cards.inject(1) {|product, card| product * card.rank.id } * (hand.flush? ? 67 : 1))] = hand
     end
     hash.values
   end
 
   private
-
-  def flush?(cards)
-    for i in 0..(cards.size - 2) do
-      return false if cards[i].suit != cards[i+1].suit
-    end
-    true
-  end
 
   def all_hands
     if @hands.empty?

@@ -10,7 +10,7 @@ class StartingHand
     raise ArgumentError, "Exactly 2 cards are required to create a starting hand, #{@cards.size} provided" if @cards.size != 2
     raise ArgumentError, "The starting hand contains duplicate cards" if @cards.uniq.length != @cards.length
     @key = @cards.inject('') { |string, card| string << card.key }
-    @id = @cards.inject(1) { |product, card| product * card.id }
+    @id = @cards.inject(1) { |product, card| product * card.uid }
   end
 
   # Returns all cards contained in the starting hand.

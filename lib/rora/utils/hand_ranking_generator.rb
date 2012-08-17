@@ -1,7 +1,7 @@
 require 'date'
 
 class HandRankingGenerator
-
+  
   def initialize
     @total = 133784560
     @count = 0
@@ -41,15 +41,38 @@ class HandRankingGenerator
     file.close
   end
 
-  def generate_flush_hand_rankings
+  def generate_flush_rankings
     file = File.new("flush_hand_rankings.csv", "w")
+    Suit.values().each do |suit|
+      generate_hand_rankings(suit, 5, 2, file)
+      generate_hand_rankings(suit, 6, 1, file)
+      generate_hand_rankings(suit, 7, 0, file)
+    end
     file.close
+  end
+
+  def generate_hand_rankings(suit, i, j, file)
+    Deck.new.retain_all(suit).combination(i).each do |suited|
+      Deck.new.remove_all(suit).combination(j).each do |remainder|
+        cards = suited + remainder
+        hand = get_best_hand(cards)
+        key = get_key(cards, hand)
+        if(!@scores.has_key?(key))
+          @scores[key] = hand.score
+          file.write("#{hand.score},#{key},#{ranks(hand.cards)},#{ranks(cards)},#{hand.type.key},#{hand.name}")
+        end
+        @count = @count + 1
+        if(@count % 50000 == 0)
+          puts "#{DateTime.now.strftime('%Y-%m-%d %H:%M:%S')} :: #{@count} records processed, #{@scores.size} records captured"
+        end
+      end
+    end
   end
 
   private
 
   def get_key(cards, hand)
-    cards.inject(1) {|product, card| product * (hand.flush? ? card.id : card.rank.id) }
+    cards.inject(1) {|product, card| product * (hand.flush? ? card.uid : card.rank.id) }
   end
 
   def ranks(cards)
