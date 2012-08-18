@@ -8,10 +8,10 @@ class HandRepository
   DIAMOND_FLUSH=243
   SPADE_FLUSH=3125
   CLUB_FLUSH=16807
-
+  
   def initialize
     @hands = Array.new
-
+    
     @five_card_table = Hash.new
     CSV.foreach("lib/rora/5-card-hands.csv") do |row|
       @five_card_table[row[1].to_i] = [row[0].to_i, row[3], row[4]]
@@ -21,27 +21,26 @@ class HandRepository
     CSV.foreach("lib/rora/7-card-hands.csv") do |row|
       @seven_card_table[row[1].to_i] = [row[0].to_i, row[4], row[5]]
     end
+
+    @flushes_table = Hash.new
+    CSV.foreach("lib/rora/flushes.csv") do |row|
+      @flushes_table[row[0].to_i] = [row[1].to_i, row[2]]
+    end
   end
 
   def evaluate_5_card_hand(cards)
-    flush = contains_flush?(cards)
-    @five_card_table.fetch(cards.inject(1) {|product, card| product * card.rank.id } * (flush ? 67 : 1))
+    flush = has_flush?(generate_suit_key(cards))
+    @five_card_table.fetch(cards.inject(1) {|product, card| product * card.rank.id} * (flush ? 67 : 1))
   end
 
   def evaluate_7_card_hand(cards)
-    flush = contains_flush?(cards)
-    flush ? get_best_hand(cards) : @seven_card_table.fetch(cards[0].rank.id * cards[1].rank.id * cards[2].rank.id * cards[3].rank.id * cards[4].rank.id * cards[5].rank.id * cards[6].rank.id)
+    key = generate_suit_key(cards)
+    flush = has_flush?(key)
+    flush ? get_best_hand(cards, key) : @seven_card_table.fetch(cards[0].rank.id * cards[1].rank.id * cards[2].rank.id * cards[3].rank.id * cards[4].rank.id * cards[5].rank.id * cards[6].rank.id)
   end
 
-  def contains_flush?(cards)
-    key = 1
-    cards.each {|card| key = key * card.suit.id}
+  def has_flush?(key)
     key % HEART_FLUSH == 0 || key % DIAMOND_FLUSH == 0 || key % SPADE_FLUSH == 0 || key % CLUB_FLUSH == 0
-  end
-
-  def get_best_hand(cards)
-    hands = cards.combination(5).to_a.each.collect { |selection| Hand.new(selection) }
-    [hands.sort {|x,y| x.score <=> y.score}[0].score]
   end
 
   # Returns all possible poker hands.
@@ -149,6 +148,20 @@ class HandRepository
   end
 
   private
+
+  def get_best_hand(cards, key)
+    flush = @flushes_table.fetch(key)
+    if(flush[0] != 5)
+      return @seven_card_table.fetch(cards[0].uid * cards[1].uid * cards[2].uid * cards[3].uid * cards[4].uid * cards[5].uid * cards[6].uid)
+    end
+    @five_card_table.fetch(cards.inject(1) {|product, card| product * ((card.suit.key == flush[1]) ? card.rank.id : 1)} * 67)
+  end
+
+  def generate_suit_key(cards)
+    key = 1
+    cards.each {|card| key = key * card.suit.id}
+    key
+  end
 
   def all_hands
     if @hands.empty?

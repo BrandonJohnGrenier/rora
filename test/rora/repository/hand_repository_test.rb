@@ -16,36 +16,6 @@ class HandRepositoyTest < ActiveSupport::TestCase
   test "should be able to evaluate a 7 card poker hand" do
     result = @repository.evaluate_7_card_hand Card.to_cards("KS,3H,2S,AS,AC,AH,AD")
     assert_equal 11, result[0]
-    assert_equal "4K", result[1]
-    assert_equal "Four Aces", result[2]
-  end
-
-  test "should be able to detect a spade flush in a 7-card hand" do
-    assert_equal false, @repository.contains_flush?(Card.to_cards("2S,3S,4S,5S,6H,7H,8H"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2S,3S,4S,5S,6S,7H,8H"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2S,3S,4S,5S,6S,7S,8H"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2S,3S,4S,5S,6S,7S,8S"))
-  end
-
-  test "should be able to detect a club flush in a 7-card hand" do
-    assert_equal false, @repository.contains_flush?(Card.to_cards("2C,3C,4C,5C,6H,7H,8H"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2C,3C,4C,5C,6C,7H,8H"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2C,3C,4C,5C,6C,7C,8H"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2C,3C,4C,5C,6C,7C,8C"))
-  end
-
-  test "should be able to detect a heart flush in a 7-card hand" do
-    assert_equal false, @repository.contains_flush?(Card.to_cards("2H,3H,4H,5H,6S,7S,8S"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2H,3H,4H,5H,6H,7S,8S"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2H,3H,4H,5H,6H,7H,8S"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2H,3H,4H,5H,6H,7H,8H"))
-  end
-
-  test "should be able to detect a diamond flush in a 7-card hand" do
-    assert_equal false, @repository.contains_flush?(Card.to_cards("2D,3D,4D,5D,6H,7H,8H"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2D,3D,4D,5D,6D,7H,8H"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2D,3D,4D,5D,6D,7D,8H"))
-    assert_equal true, @repository.contains_flush?(Card.to_cards("2D,3D,4D,5D,6D,7D,8D"))
   end
 
   test "should return all 2,598,960 poker hands" do

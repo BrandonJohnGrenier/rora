@@ -13,6 +13,7 @@ class EquityCalculatorTest < ActiveSupport::TestCase
     #puts "#{DateTime.now.strftime('%Y-%m-%d %H:%M:%S')}"
     equities = @calculator.calculate_equity(starting_hands, @board)
     #puts "#{DateTime.now.strftime('%Y-%m-%d %H:%M:%S')}"
+    
     assert_equity_value "1.62", "2H2S", equities
     assert_equity_value "98.38", "3H3S", equities
   end
