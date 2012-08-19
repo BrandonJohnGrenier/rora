@@ -29,7 +29,7 @@ class HandRepository
   end
 
   def evaluate_5_card_hand(cards)
-    flush = has_flush?(generate_suit_key(cards))
+    flush = Hand.new(cards).flush?
     @five_card_table.fetch(cards.inject(1) {|product, card| product * card.rank.id} * (flush ? 67 : 1))
   end
 

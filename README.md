@@ -129,7 +129,7 @@ You can query a hand to determine the probability of drawing that type of hand.
     
 ## Starting Hands
 
-Beyond the code samples presented below, the following links provide more information about [texas hold'em starting hands](http://www.moralesce.com/2012/01/21/holdem-starting-hands/) and [poker hand evaluation](http://www.moralesce.com/2011/11/26/poker-hand-evaluation/).
+Beyond the code samples presented below, the following links provide more information about [texas hold'em starting hands](http://www.moralesce.com/2012/01/21/holdem-starting-hands/) and [poker hand evaluation](http://www.moralesce.com/2012/07/26/a-5-card-poker-hand-evaluator-in-ruby).
 
 ### Overview
 A starting hand is also referred to as a player's pocket cards, or hole cards. A starting hand consists of exactly two cards, and can be constructed by providing an array of cards or an equivalent sequence of suit-rank character values.
