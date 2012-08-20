@@ -1,12 +1,12 @@
 Gem::Specification.new do |s|
   s.name        = "rora"
-  s.version     = "0.0.6"
+  s.version     = "0.4.0"
   s.platform    = Gem::Platform::RUBY
   s.summary     = "A Ruby poker library"
   s.description = "A Ruby library for conducting poker experiments and simulations"
 
   s.author      = "Brandon John Grenier"
-  s.email       = "brandon@moralesce.com"
+  s.email       = "brandon.john.grenier@moralesce.com"
   s.homepage    = "http://www.moralesce.com"
   
   s.files       = Dir.glob("{lib/**/*}") + %w{ LICENSE README.md Rakefile }
